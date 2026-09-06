@@ -25,7 +25,6 @@ db.sqlite3
 db.sqlite3-journal
 media/
 staticfiles/
-static/
 *.mo
 
 # Database
@@ -62,7 +61,6 @@ desktop.ini
 myproject/settings/local.py
 myproject/settings/secret.py
 media/
-static/
 staticfiles/
 
 # Backup
