@@ -1,3 +1,354 @@
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
+from django.utils import timezone
 
-# Create your models here.
+
+class Organization(models.Model):
+
+    class OrganizationType(models.TextChoices):
+        POLICE_STATION = "POLICE_STATION", "Police Station"
+        COURT = "COURT", "Court"
+        NCRB = "NCRB", "NCRB"
+        FORENSIC_LAB = "FORENSIC_LAB", "Forensic Lab"
+        LEGAL_DEPT = "LEGAL_DEPT", "Legal Department"
+
+    id = models.BigAutoField(
+        primary_key=True
+    )
+
+    org_code = models.CharField(
+        max_length=30
+    )
+
+    org_name = models.CharField(
+        max_length=150
+    )
+
+    org_type = models.CharField(
+        max_length=20,
+        choices=OrganizationType.choices
+    )
+
+    jurisdiction_code = models.CharField(
+        max_length=20,
+        null=True,
+        blank=True
+    )
+
+    state = models.CharField(
+        max_length=60,
+        null=True,
+        blank=True
+    )
+
+    district = models.CharField(
+        max_length=60,
+        null=True,
+        blank=True
+    )
+
+    address = models.TextField(
+        null=True,
+        blank=True
+    )
+
+    contact_email = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True
+    )
+
+    contact_phone = models.CharField(
+        max_length=20,
+        null=True,
+        blank=True
+    )
+
+    is_active = models.BooleanField(
+        default=True
+    )
+
+    created_at = models.DateTimeField(
+        default=timezone.now
+    )
+
+    updated_at = models.DateTimeField(
+        default=timezone.now
+    )
+
+    class Meta:
+        db_table = "organizations"
+
+    def __str__(self):
+        return f"{self.org_code} - {self.org_name}"
+
+
+class UserManager(BaseUserManager):
+
+    def create_user(self, email, password=None, **extra_fields):
+
+        if not email:
+            raise ValueError("Email is required.")
+
+        email = self.normalize_email(email)
+
+        user = self.model(
+            email=email,
+            **extra_fields
+        )
+
+        if password:
+            user.set_password(password)
+
+        user.save(using=self._db)
+
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+
+        extra_fields.setdefault("is_active", True)
+
+        return self.create_user(
+            email=email,
+            password=password,
+            **extra_fields
+        )
+
+
+class User(AbstractBaseUser):
+
+    class Role(models.TextChoices):
+        ADMIN = "ADMIN", "Administrator"
+        OFFICER = "OFFICER", "Officer"
+        JUDGE = "JUDGE", "Judge"
+        CLERK = "CLERK", "Clerk"
+        FORENSIC = "FORENSIC", "Forensic"
+        AUDITOR = "AUDITOR", "Auditor"
+
+    class Status(models.TextChoices):
+        ACTIVE = "ACTIVE", "Active"
+        SUSPENDED = "SUSPENDED", "Suspended"
+        DEACTIVATED = "DEACTIVATED", "Deactivated"
+
+    # Required database primary key
+    id = models.BigAutoField(
+        primary_key=True
+    )
+
+    # Organization relationship
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.RESTRICT,
+        related_name="users",
+        db_column="organization_id"
+    )
+
+    employee_code = models.CharField(
+        max_length=40
+    )
+
+    full_name = models.CharField(
+        max_length=120
+    )
+
+    email = models.EmailField(
+        max_length=120,
+        unique=True
+    )
+
+    role = models.CharField(
+        max_length=20,
+        choices=Role.choices,
+        default=Role.OFFICER
+    )
+
+    phone = models.CharField(
+        max_length=20,
+        null=True,
+        blank=True
+    )
+
+    # Django's password field mapped to required DB column
+    password = models.CharField(
+        max_length=255,
+        db_column="password_hash"
+    )
+
+    mfa_enabled = models.BooleanField(
+        default=False
+    )
+
+    mfa_secret_encrypted = models.BinaryField(
+        null=True,
+        blank=True
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.ACTIVE
+    )
+
+    last_login_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(
+        default=timezone.now
+    )
+
+    updated_at = models.DateTimeField(
+        default=timezone.now
+    )
+
+    # Django authentication needs this property,
+    # but we don't want a last_login database column.
+    @property
+    def last_login(self):
+        return None
+
+    @last_login.setter
+    def last_login(self, value):
+        pass
+
+    USERNAME_FIELD = "email"
+
+    REQUIRED_FIELDS = [
+        "organization",
+        "employee_code",
+        "full_name",
+    ]
+
+    objects = UserManager()
+
+    class Meta:
+        db_table = "users"
+
+    @property
+    def is_staff(self):
+        return False
+
+    @property
+    def is_superuser(self):
+        return False
+
+    def __str__(self):
+        return self.email
+
+
+class Role(models.Model):
+
+    class RoleCode(models.TextChoices):
+        SUPER_ADMIN = "SUPER_ADMIN", "Super Admin"
+        DEPARTMENT_ADMIN = "DEPARTMENT_ADMIN", "Department Admin"
+        INVESTIGATION_OFFICER = "INVESTIGATION_OFFICER", "Investigation Officer"
+        CASE_OFFICER = "CASE_OFFICER", "Case Officer / Case Manager"
+        LEGAL_OFFICER = "LEGAL_OFFICER", "Legal Officer"
+        FORENSIC_OFFICER = "FORENSIC_OFFICER", "Evidence / Forensic Officer"
+        REVIEWER = "REVIEWER", "Reviewer / Approver"
+        AUDITOR = "AUDITOR", "Auditor"
+        VIEWER = "VIEWER", "Viewer"
+
+    id = models.BigAutoField(primary_key=True)
+    code = models.CharField(
+        max_length=30,
+        choices=RoleCode.choices,
+        unique=True
+    )
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = "roles"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.name
+
+
+class UserRole(models.Model):
+    id = models.BigAutoField(primary_key=True)
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="user_roles",
+        db_column="user_id"
+    )
+
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.RESTRICT,
+        related_name="user_roles",
+        db_column="role_id"
+    )
+
+    assigned_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = "user_roles"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "role"],
+                name="unique_user_role"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.user.email} - {self.role.name}"
+    
+
+
+class Permission(models.Model):
+
+    id = models.BigAutoField(primary_key=True)
+    code = models.CharField(max_length=60, unique=True)
+    name = models.CharField(max_length=120)
+    description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = "permissions"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.code
+
+
+
+
+class RolePermission(models.Model):
+
+    id = models.BigAutoField(primary_key=True)
+
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.CASCADE,
+        related_name="role_permissions",
+        db_column="role_id"
+    )
+
+    permission = models.ForeignKey(
+        Permission,
+        on_delete=models.CASCADE,
+        related_name="role_permissions",
+        db_column="permission_id"
+    )
+
+    class Meta:
+        db_table = "role_permissions"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["role", "permission"],
+                name="unique_role_permission"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.role.code} - {self.permission.code}"
