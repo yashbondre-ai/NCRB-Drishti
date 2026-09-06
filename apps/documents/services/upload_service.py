@@ -1,9 +1,14 @@
 from django.db import transaction
-
+from .audit_service import create_audit_log
 from apps.cases.models import Case
-from apps.documents.models import Document, DocumentVersion
+from apps.documents.models import (
+    Document,
+    DocumentVersion,
+    BlockchainRecord,
+)
 
 from .hash_service import calculate_sha256
+from .blockchain_service import create_blockchain_record
 
 
 @transaction.atomic
@@ -40,6 +45,30 @@ def upload_document(
         mime_type=uploaded_file.content_type or "",
         uploaded_by=user,
     )
+
+    blockchain_data = create_blockchain_record(
+        document_version=version,
+    )
+
+    BlockchainRecord.objects.create(
+        document_version=version,
+        document_hash=blockchain_data["document_hash"],
+        blockchain_hash=blockchain_data["blockchain_hash"],
+        status=blockchain_data["status"],
+    )
+    create_audit_log(
+        user=user,
+        document=document,
+        document_version=version,
+        action="upload",
+        details={
+            "filename": version.original_filename,
+            "version": version.version_number,
+            "sha256_hash": version.sha256_hash,
+            "file_size": version.file_size,
+            "mime_type": version.mime_type,
+    },
+)
 
     return document, version
 
@@ -85,5 +114,29 @@ def upload_document_version(
         mime_type=uploaded_file.content_type or "",
         uploaded_by=user,
     )
+
+    blockchain_data = create_blockchain_record(
+        document_version=version,
+    )
+
+    BlockchainRecord.objects.create(
+        document_version=version,
+        document_hash=blockchain_data["document_hash"],
+        blockchain_hash=blockchain_data["blockchain_hash"],
+        status=blockchain_data["status"],
+    )
+    create_audit_log(
+        user=user,
+        document=document,
+        document_version=version,
+        action="version_upload",
+        details={
+            "filename": version.original_filename,
+            "version": version.version_number,
+            "sha256_hash": version.sha256_hash,
+            "file_size": version.file_size,
+            "mime_type": version.mime_type,
+    },
+)
 
     return version

@@ -79,3 +79,89 @@ class DocumentVersion(models.Model):
 
     def __str__(self):
         return f"{self.document.title} - v{self.version_number}"
+
+class BlockchainRecord(models.Model):
+    document_version = models.OneToOneField(
+        DocumentVersion,
+        on_delete=models.PROTECT,
+        related_name="blockchain_record",
+    )
+
+    document_hash = models.CharField(
+        max_length=64,
+        db_index=True,
+    )
+
+    blockchain_hash = models.CharField(
+        max_length=64,
+        unique=True,
+    )
+
+    status = models.CharField(
+        max_length=50,
+        default="confirmed",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    def __str__(self):
+        return (
+            f"Blockchain Record - "
+            f"{self.document_version.document.title} "
+            f"v{self.document_version.version_number}"
+        )
+
+class AuditLog(models.Model):
+    ACTION_CHOICES = [
+        ("upload", "Upload"),
+        ("version_upload", "Version Upload"),
+        ("download", "Download"),
+        ("verify", "Verify"),
+        ("delete", "Delete"),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="document_audit_logs",
+    )
+
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.PROTECT,
+        related_name="audit_logs",
+    )
+
+    document_version = models.ForeignKey(
+        DocumentVersion,
+        on_delete=models.PROTECT,
+        related_name="audit_logs",
+        null=True,
+        blank=True,
+    )
+
+    action = models.CharField(
+        max_length=50,
+        choices=ACTION_CHOICES,
+    )
+
+    details = models.JSONField(
+        default=dict,
+        blank=True,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return (
+            f"{self.action} - "
+            f"{self.document.title} - "
+            f"{self.user.username}"
+        )
