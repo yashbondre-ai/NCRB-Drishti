@@ -117,6 +117,14 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
 
+    class Role(models.TextChoices):
+        ADMIN = "ADMIN", "Administrator"
+        OFFICER = "OFFICER", "Officer"
+        JUDGE = "JUDGE", "Judge"
+        CLERK = "CLERK", "Clerk"
+        FORENSIC = "FORENSIC", "Forensic"
+        AUDITOR = "AUDITOR", "Auditor"
+
     class Status(models.TextChoices):
         ACTIVE = "ACTIVE", "Active"
         SUSPENDED = "SUSPENDED", "Suspended"
@@ -146,6 +154,12 @@ class User(AbstractBaseUser):
     email = models.EmailField(
         max_length=120,
         unique=True
+    )
+
+    role = models.CharField(
+        max_length=20,
+        choices=Role.choices,
+        default=Role.OFFICER
     )
 
     phone = models.CharField(
