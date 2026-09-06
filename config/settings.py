@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'apps.documents',
     'rest_framework',
     "apps.auth.apps.AuthConfig",
-    'apps.cases.apps.CasesConfig',
+    # 'apps.cases.apps.CasesConfig',
 ]
 
 

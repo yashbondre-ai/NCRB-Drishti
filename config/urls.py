@@ -33,4 +33,4 @@ if settings.DEBUG:
 
     path("api/auth/", include("apps.auth.urls")),
     path("api/cases/", include("apps.cases.urls")),
-]
+
