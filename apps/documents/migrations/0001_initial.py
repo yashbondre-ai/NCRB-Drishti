@@ -19,7 +19,6 @@ class Migration(migrations.Migration):
             name='Document',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-<<<<<<< HEAD
                 ('title', models.CharField(max_length=255)),
                 ('description', models.TextField(blank=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
@@ -51,24 +50,6 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ['-version_number'],
                 'constraints': [models.UniqueConstraint(fields=('document', 'version_number'), name='unique_document_version')],
-=======
-                ('title', models.CharField(help_text='Document title or headline', max_length=255)),
-                ('document_type', models.CharField(choices=[('FIR', 'First Information Report'), ('INVESTIGATION_REPORT', 'Investigation Report'), ('WITNESS_STATEMENT', 'Witness Statement'), ('CHARGE_SHEET', 'Charge Sheet'), ('COURT_FILING', 'Court Filing'), ('EVIDENCE_RECORD', 'Evidence Record'), ('FORENSIC_REPORT', 'Forensic Report'), ('LEGAL_NOTICE', 'Legal Notice'), ('JUDGMENT', 'Judgment'), ('OTHER', 'Other')], default='OTHER', max_length=50)),
-                ('file', models.FileField(blank=True, null=True, upload_to='case_documents/')),
-                ('file_hash', models.CharField(blank=True, help_text='SHA-256 hash for tamper-evident blockchain/integrity verification', max_length=64)),
-                ('description', models.TextField(blank=True, help_text='Document summary or metadata')),
-                ('is_verified', models.BooleanField(default=False, help_text='Integrity verified flag')),
-                ('created_at', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('case', models.ForeignKey(help_text='The case this document belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='documents', to='cases.case')),
-                ('uploaded_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='uploaded_documents', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'verbose_name': 'Document',
-                'verbose_name_plural': 'Documents',
-                'ordering': ['-created_at'],
-                'indexes': [models.Index(fields=['case', 'created_at'], name='documents_d_case_id_f912e9_idx'), models.Index(fields=['document_type'], name='documents_d_documen_40c475_idx')],
->>>>>>> 27dd76d138eb8b703940d94e55240d7d5bec46e3
             },
         ),
     ]
