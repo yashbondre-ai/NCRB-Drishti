@@ -57,6 +57,15 @@ class RegisterView(generics.CreateAPIView):
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
+    def get(self, request, *args, **kwargs):
+        return Response(
+            {
+                "message": "Login endpoint. Use POST with email and password.",
+                "next": request.GET.get("next"),
+            },
+            status=status.HTTP_200_OK,
+        )
+
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data={
             "email": request.data.get("email"),

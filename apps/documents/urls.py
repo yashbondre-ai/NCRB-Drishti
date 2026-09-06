@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (
+    document_list_view,
     upload_document_view,
     upload_document_version_view,
     download_document_version_view,
@@ -10,6 +11,11 @@ from .views import (
 
 
 urlpatterns = [
+    path(
+    "",
+    document_list_view,
+    name="document-list",
+),
     path(
         "upload/",
         upload_document_view,

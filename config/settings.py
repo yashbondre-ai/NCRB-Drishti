@@ -38,6 +38,7 @@ SECRET_KEY = 'django-insecure-g=#c%5bsr$owgrzo1gi3leyhzifa6r&aoe$ged-y^e86@@0q67
 DEBUG = True
 
 ALLOWED_HOSTS = []
+LOGIN_URL = "/api/auth/login/"
 
 
 # Application definition
@@ -49,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.cases',
     'apps.documents',
     'rest_framework',
     "apps.auth.apps.AuthConfig",

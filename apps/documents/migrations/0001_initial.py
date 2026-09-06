@@ -10,65 +10,148 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('cases', '0001_initial'),
+        ("cases", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Document',
+            name="Document",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-<<<<<<< HEAD
-                ('title', models.CharField(max_length=255)),
-                ('description', models.TextField(blank=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('case', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='documents', to='cases.case')),
-                ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='created_documents', to=settings.AUTH_USER_MODEL)),
-                ('deleted_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='deleted_documents', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(max_length=255),
+                ),
+                (
+                    "description",
+                    models.TextField(blank=True),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True),
+                ),
+                (
+                    "is_deleted",
+                    models.BooleanField(default=False),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(blank=True, null=True),
+                ),
+                (
+                    "case",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="documents",
+                        to="cases.case",
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="created_documents",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "deleted_by",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="deleted_documents",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='DocumentVersion',
+            name="DocumentVersion",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version_number', models.PositiveIntegerField()),
-                ('file', models.FileField(upload_to='documents/%Y/%m/%d/')),
-                ('sha256_hash', models.CharField(db_index=True, max_length=64)),
-                ('original_filename', models.CharField(max_length=255)),
-                ('file_size', models.PositiveBigIntegerField()),
-                ('mime_type', models.CharField(max_length=100)),
-                ('uploaded_at', models.DateTimeField(auto_now_add=True)),
-                ('document', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='versions', to='documents.document')),
-                ('uploaded_by', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='uploaded_document_versions', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "version_number",
+                    models.PositiveIntegerField(),
+                ),
+                (
+                    "file",
+                    models.FileField(
+                        upload_to="documents/%Y/%m/%d/",
+                    ),
+                ),
+                (
+                    "sha256_hash",
+                    models.CharField(
+                        db_index=True,
+                        max_length=64,
+                    ),
+                ),
+                (
+                    "original_filename",
+                    models.CharField(max_length=255),
+                ),
+                (
+                    "file_size",
+                    models.PositiveBigIntegerField(),
+                ),
+                (
+                    "mime_type",
+                    models.CharField(max_length=100),
+                ),
+                (
+                    "uploaded_at",
+                    models.DateTimeField(auto_now_add=True),
+                ),
+                (
+                    "document",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="versions",
+                        to="documents.document",
+                    ),
+                ),
+                (
+                    "uploaded_by",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="uploaded_document_versions",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-version_number'],
-                'constraints': [models.UniqueConstraint(fields=('document', 'version_number'), name='unique_document_version')],
-=======
-                ('title', models.CharField(help_text='Document title or headline', max_length=255)),
-                ('document_type', models.CharField(choices=[('FIR', 'First Information Report'), ('INVESTIGATION_REPORT', 'Investigation Report'), ('WITNESS_STATEMENT', 'Witness Statement'), ('CHARGE_SHEET', 'Charge Sheet'), ('COURT_FILING', 'Court Filing'), ('EVIDENCE_RECORD', 'Evidence Record'), ('FORENSIC_REPORT', 'Forensic Report'), ('LEGAL_NOTICE', 'Legal Notice'), ('JUDGMENT', 'Judgment'), ('OTHER', 'Other')], default='OTHER', max_length=50)),
-                ('file', models.FileField(blank=True, null=True, upload_to='case_documents/')),
-                ('file_hash', models.CharField(blank=True, help_text='SHA-256 hash for tamper-evident blockchain/integrity verification', max_length=64)),
-                ('description', models.TextField(blank=True, help_text='Document summary or metadata')),
-                ('is_verified', models.BooleanField(default=False, help_text='Integrity verified flag')),
-                ('created_at', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('case', models.ForeignKey(help_text='The case this document belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='documents', to='cases.case')),
-                ('uploaded_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='uploaded_documents', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'verbose_name': 'Document',
-                'verbose_name_plural': 'Documents',
-                'ordering': ['-created_at'],
-                'indexes': [models.Index(fields=['case', 'created_at'], name='documents_d_case_id_f912e9_idx'), models.Index(fields=['document_type'], name='documents_d_documen_40c475_idx')],
->>>>>>> 27dd76d138eb8b703940d94e55240d7d5bec46e3
+                "ordering": ["-version_number"],
+                "constraints": [
+                    models.UniqueConstraint(
+                        fields=("document", "version_number"),
+                        name="unique_document_version",
+                    ),
+                ],
             },
         ),
     ]

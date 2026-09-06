@@ -256,3 +256,22 @@ def delete_document_view(request, document_id):
         },
         status=200,
     )
+@login_required
+def document_list_view(request):
+    documents = Document.objects.filter(
+        is_deleted=False
+    ).order_by("-created_at")
+
+    return JsonResponse(
+        {
+            "success": True,
+            "documents": [
+                {
+                    "id": document.id,
+                    "title": document.title,
+                    "case_id": document.case_id,
+                }
+                for document in documents
+            ],
+        }
+    )
