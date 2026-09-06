@@ -8,13 +8,18 @@ from .serializers import (
     LoginSerializer,
 )
 
-from rest_framework.permissions import IsAuthenticated
 
+
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from .permissions import HasPermission
 
 class OrganizationListCreateView(generics.ListCreateAPIView):
     queryset = Organization.objects.all().order_by("id")
     serializer_class = OrganizationSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [HasPermission]
+    required_permission = "ORG_VIEW"
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -77,3 +82,6 @@ class LoginView(generics.GenericAPIView):
             },
             status=status.HTTP_200_OK,
         )
+        
+        
+        

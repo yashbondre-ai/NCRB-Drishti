@@ -235,3 +235,120 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+
+class Role(models.Model):
+
+    class RoleCode(models.TextChoices):
+        SUPER_ADMIN = "SUPER_ADMIN", "Super Admin"
+        DEPARTMENT_ADMIN = "DEPARTMENT_ADMIN", "Department Admin"
+        INVESTIGATION_OFFICER = "INVESTIGATION_OFFICER", "Investigation Officer"
+        CASE_OFFICER = "CASE_OFFICER", "Case Officer / Case Manager"
+        LEGAL_OFFICER = "LEGAL_OFFICER", "Legal Officer"
+        FORENSIC_OFFICER = "FORENSIC_OFFICER", "Evidence / Forensic Officer"
+        REVIEWER = "REVIEWER", "Reviewer / Approver"
+        AUDITOR = "AUDITOR", "Auditor"
+        VIEWER = "VIEWER", "Viewer"
+
+    id = models.BigAutoField(primary_key=True)
+    code = models.CharField(
+        max_length=30,
+        choices=RoleCode.choices,
+        unique=True
+    )
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = "roles"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.name
+
+
+class UserRole(models.Model):
+    id = models.BigAutoField(primary_key=True)
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="user_roles",
+        db_column="user_id"
+    )
+
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.RESTRICT,
+        related_name="user_roles",
+        db_column="role_id"
+    )
+
+    assigned_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = "user_roles"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "role"],
+                name="unique_user_role"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.user.email} - {self.role.name}"
+    
+
+
+class Permission(models.Model):
+
+    id = models.BigAutoField(primary_key=True)
+    code = models.CharField(max_length=60, unique=True)
+    name = models.CharField(max_length=120)
+    description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = "permissions"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.code
+
+
+
+
+class RolePermission(models.Model):
+
+    id = models.BigAutoField(primary_key=True)
+
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.CASCADE,
+        related_name="role_permissions",
+        db_column="role_id"
+    )
+
+    permission = models.ForeignKey(
+        Permission,
+        on_delete=models.CASCADE,
+        related_name="role_permissions",
+        db_column="permission_id"
+    )
+
+    class Meta:
+        db_table = "role_permissions"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["role", "permission"],
+                name="unique_role_permission"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.role.code} - {self.permission.code}"

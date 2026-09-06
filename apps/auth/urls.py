@@ -6,7 +6,6 @@ from .views import (
     LoginView,
 )
 
-
 urlpatterns = [
     path(
         "organizations/",
@@ -26,4 +25,6 @@ urlpatterns = [
     LoginView.as_view(),
     name="login",
     ),
+    
+    
 ]
