@@ -9,7 +9,9 @@ https://docs.djangoproject.com/en/6.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -73,12 +75,21 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django_tidb",
+        "NAME": os.getenv("TIDB_DATABASE"),
+        "USER": os.getenv("TIDB_USER"),
+        "PASSWORD": os.getenv("TIDB_PASSWORD"),
+        "HOST": os.getenv("TIDB_HOST"),
+        "PORT": os.getenv("TIDB_PORT", "4000"),
+
+        "OPTIONS": {
+            "ssl": {
+                "ca": os.getenv("TIDB_CA_PATH"),
+            },
+        },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
