@@ -89,3 +89,5 @@ htmlcov/
 *.cover
 .hypothesis/
 .pytest_cache/
+
+isrgrootx1.pem
