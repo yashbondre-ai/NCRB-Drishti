@@ -1,0 +1,481 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FIR Register | NCRB-Drishti{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/firs.css' %}">
+{% endblock %}
+
+{% block page_title %}Statutory First Information Report (FIR) Ledger{% endblock %}
+{% block page_subtitle %}Station Crime Register • Compliant with Section 173 Bharatiya Nagarik Suraksha Sanhita (BNSS){% endblock %}
+
+{% block content %}
+<div class="firs-container">
+    <section class="firs-kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-amber">
+                <i class="ph-fill ph-clipboard-text"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Registered FIRs</span>
+                <h3 class="kpi-value">2,340</h3>
+                <span class="kpi-trend trend-neutral">Cognizable Crimes</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-blue">
+                <i class="ph-fill ph-globe"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Cyber Crime E-FIRs</span>
+                <h3 class="kpi-value">812</h3>
+                <span class="kpi-trend trend-teal">Citizen Portal Synced</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-purple">
+                <i class="ph-fill ph-arrows-left-right"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Zero FIRs Transferred</span>
+                <h3 class="kpi-value">45</h3>
+                <span class="kpi-trend trend-warn">Jurisdiction Relayed</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-danger">
+                <i class="ph-fill ph-pen-nib"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Pending SHO Sign</span>
+                <h3 class="kpi-value">12</h3>
+                <span class="kpi-trend trend-danger">Awaiting Digital Seal</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="firs-toolbar-panel">
+        <div class="toolbar-left">
+            <div class="search-filter-box">
+                <i class="ph ph-magnifying-glass"></i>
+                <input type="text" id="firSearchInput" placeholder="Search FIR number, police station, complainant, or section...">
+            </div>
+            <div class="filter-chips-cluster">
+                <button class="fir-chip active" data-filter="all">All FIRs</button>
+                <button class="fir-chip" data-filter="cognizable">Cognizable Regular</button>
+                <button class="fir-chip" data-filter="cyber">Cyber E-FIR</button>
+                <button class="fir-chip" data-filter="zero">Zero FIR</button>
+                <button class="fir-chip" data-filter="pending">Pending Sign</button>
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <button class="btn-primary-action" id="btnLodgeFir">
+                <i class="ph ph-plus-circle"></i>
+                <span>Lodge E-FIR</span>
+            </button>
+        </div>
+    </section>
+
+    <section class="panel-card firs-table-panel">
+        <div class="panel-header">
+            <div>
+                <h4>Station Crime Book & General Diary Records</h4>
+                <span class="panel-subtext">Statutory electronic record register under Section 173 BNSS, 2023</span>
+            </div>
+            <div class="table-meta-tag">
+                <span id="firRecordCounter">Showing 5 of 5 Records</span>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="lex-table" id="firsMasterTable">
+                <thead>
+                    <tr>
+                        <th>FIR No. & Year</th>
+                        <th>Police Station / District</th>
+                        <th>Acts & Sections</th>
+                        <th>Complainant vs Accused</th>
+                        <th>Occurrence vs Reported</th>
+                        <th>Assigned IO</th>
+                        <th>Authentication</th>
+                        <th class="text-right">Gazette</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-type="cyber" 
+                        data-status="signed"
+                        data-fir="FIR No. 124/2026"
+                        data-ps="Cyber Cell PS, Bhandara"
+                        data-district="Bhandara, Maharashtra"
+                        data-sections="BNS Sec 308(2), IT Act 66D"
+                        data-complainant="Axis Security Systems Ltd. (Rep: Sandeep Rao)"
+                        data-accused="Sandeep K. Verma (Technical Officer)"
+                        data-occurrence="01 Aug 2026, 23:15 IST"
+                        data-reported="02 Aug 2026, 09:30 IST"
+                        data-io="Insp. Rahul Sharma"
+                        data-sho="PI S. T. Shinde"
+                        data-sho-id="MH-CID-8812"
+                        data-hash="4f8a92b3c1048e91827419baedbc58129a01f8d9b2341256789abcdef0123456"
+                        data-gist="Unauthorized extraction of proprietary source binaries, corporate server intrusion, and extortion demand of INR 45 Lakhs via cryptographic currency.">
+                        <td class="font-mono fir-no-cell">FIR 124/2026</td>
+                        <td>
+                            <div class="ps-cell-block">
+                                <span class="ps-name">Cyber Cell PS</span>
+                                <span class="ps-dist">Dist: Bhandara</span>
+                            </div>
+                        </td>
+                        <td><span class="section-pill">BNS 308(2), IT 66D</span></td>
+                        <td>
+                            <div class="parties-block">
+                                <span class="complainant-text">Axis Security Ltd.</span>
+                                <span class="accused-text">vs. Sandeep K. Verma</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="time-delta-block">
+                                <span class="occur-time">Occ: 01 Aug 23:15</span>
+                                <span class="rep-time">Rep: 02 Aug 09:30</span>
+                            </div>
+                        </td>
+                        <td>Insp. Rahul Sharma</td>
+                        <td>
+                            <span class="status-tag status-verified"><i class="ph-fill ph-seal-check"></i> SHO Signed</span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn-view-gazette" title="View Official FIR Form"><i class="ph ph-file-text"></i> View FIR</button>
+                        </td>
+                    </tr>
+
+                    <tr data-type="cognizable" 
+                        data-status="signed"
+                        data-fir="FIR No. 87/2026"
+                        data-ps="Sakoli Police Station"
+                        data-district="Bhandara, Maharashtra"
+                        data-sections="BNS Sec 303(2), BNS Sec 318(4)"
+                        data-complainant="Prakash J. Meshram"
+                        data-accused="Rakesh M. Gaikwad & 2 Unknown"
+                        data-occurrence="17 Jul 2026, 14:00 IST"
+                        data-reported="18 Jul 2026, 10:15 IST"
+                        data-io="Insp. Amit Verma"
+                        data-sho="PI V. K. Jadhav"
+                        data-sho-id="MH-BHD-4401"
+                        data-hash="7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730"
+                        data-gist="Deceptive procurement of bank tokens, forging agricultural land lease papers, and illegal diversion of cooperative credit subsidy.">
+                        <td class="font-mono fir-no-cell">FIR 87/2026</td>
+                        <td>
+                            <div class="ps-cell-block">
+                                <span class="ps-name">Sakoli PS</span>
+                                <span class="ps-dist">Dist: Bhandara</span>
+                            </div>
+                        </td>
+                        <td><span class="section-pill">BNS 303(2), 318(4)</span></td>
+                        <td>
+                            <div class="parties-block">
+                                <span class="complainant-text">Prakash J. Meshram</span>
+                                <span class="accused-text">vs. Rakesh M. Gaikwad</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="time-delta-block">
+                                <span class="occur-time">Occ: 17 Jul 14:00</span>
+                                <span class="rep-time">Rep: 18 Jul 10:15</span>
+                            </div>
+                        </td>
+                        <td>Insp. Amit Verma</td>
+                        <td>
+                            <span class="status-tag status-verified"><i class="ph-fill ph-seal-check"></i> SHO Signed</span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn-view-gazette" title="View Official FIR Form"><i class="ph ph-file-text"></i> View FIR</button>
+                        </td>
+                    </tr>
+
+                    <tr data-type="zero" 
+                        data-status="signed"
+                        data-fir="ZERO FIR 03/2026"
+                        data-ps="Mohadi Police Station"
+                        data-district="Bhandara (Relayed to Nagpur Rural)"
+                        data-sections="BNS Sec 316(2), IT Act 66"
+                        data-complainant="Neha Patil (Cyber Advocate)"
+                        data-accused="Nikhil R. Tembhare"
+                        data-occurrence="09 Jun 2026, 19:30 IST"
+                        data-reported="10 Jun 2026, 08:45 IST"
+                        data-io="Sub-Insp. D. K. Joshi"
+                        data-sho="PI M. B. Patil"
+                        data-sho-id="MH-BHD-5510"
+                        data-hash="ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"
+                        data-gist="Jurisdiction offense committed at highway border; immediately registered under Section 173(1) BNSS Zero FIR procedure and dispatched to Nagpur Cyber Jurisdiction.">
+                        <td class="font-mono fir-no-cell text-purple">ZERO 03/2026</td>
+                        <td>
+                            <div class="ps-cell-block">
+                                <span class="ps-name">Mohadi PS</span>
+                                <span class="ps-dist text-purple">Relayed to Nagpur</span>
+                            </div>
+                        </td>
+                        <td><span class="section-pill">BNS 316(2), IT 66</span></td>
+                        <td>
+                            <div class="parties-block">
+                                <span class="complainant-text">Neha Patil</span>
+                                <span class="accused-text">vs. Nikhil R. Tembhare</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="time-delta-block">
+                                <span class="occur-time">Occ: 09 Jun 19:30</span>
+                                <span class="rep-time">Rep: 10 Jun 08:45</span>
+                            </div>
+                        </td>
+                        <td>Sub-Insp. D. K. Joshi</td>
+                        <td>
+                            <span class="status-tag status-zero"><i class="ph-fill ph-arrows-left-right"></i> Relayed</span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn-view-gazette" title="View Official FIR Form"><i class="ph ph-file-text"></i> View FIR</button>
+                        </td>
+                    </tr>
+
+                    <tr data-type="cyber" 
+                        data-status="pending"
+                        data-fir="FIR No. 142/2026"
+                        data-ps="Cyber Cell PS, Bhandara"
+                        data-district="Bhandara, Maharashtra"
+                        data-sections="BNS Sec 385, IT Act 66F"
+                        data-complainant="MSEDCL Sub-Division Sakoli"
+                        data-accused="Unidentified IP Node [192.168.1.45]"
+                        data-occurrence="31 Aug 2026, 22:00 IST"
+                        data-reported="01 Sep 2026, 06:30 IST"
+                        data-io="Insp. Rahul Sharma"
+                        data-sho="Pending SHO Verification"
+                        data-sho-id="AWAITING-AUTH"
+                        data-hash="b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9"
+                        data-gist="Ransomware payload execution against electrical grid SCADA nodes demanding administrative decrypt key in Monero crypto tokens.">
+                        <td class="font-mono fir-no-cell">FIR 142/2026</td>
+                        <td>
+                            <div class="ps-cell-block">
+                                <span class="ps-name">Cyber Cell PS</span>
+                                <span class="ps-dist">Dist: Bhandara</span>
+                            </div>
+                        </td>
+                        <td><span class="section-pill">BNS 385, IT 66F</span></td>
+                        <td>
+                            <div class="parties-block">
+                                <span class="complainant-text">MSEDCL Sakoli</span>
+                                <span class="accused-text">vs. Unidentified Node</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="time-delta-block">
+                                <span class="occur-time">Occ: 31 Aug 22:00</span>
+                                <span class="rep-time">Rep: 01 Sep 06:30</span>
+                            </div>
+                        </td>
+                        <td>Insp. Rahul Sharma</td>
+                        <td>
+                            <span class="status-tag status-warn"><i class="ph-fill ph-clock-countdown"></i> Pending Sign</span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn-view-gazette" title="View Official FIR Form"><i class="ph ph-file-text"></i> View FIR</button>
+                        </td>
+                    </tr>
+
+                    <tr data-type="cognizable" 
+                        data-status="signed"
+                        data-fir="FIR No. 49/2026"
+                        data-ps="Bhandara City Police Station"
+                        data-district="Bhandara, Maharashtra"
+                        data-sections="BNS Sec 319(2), IT Act 43"
+                        data-complainant="Suresh W. Lanjewar"
+                        data-accused="Prakash J. Meshram"
+                        data-occurrence="12 Nov 2025, 11:30 IST"
+                        data-reported="14 Nov 2025, 15:45 IST"
+                        data-io="Insp. Rahul Sharma"
+                        data-sho="PI R. D. Deshmukh"
+                        data-sho-id="MH-BHD-1092"
+                        data-hash="a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"
+                        data-gist="Identity theft via fraudulent SIM cloning to drain retail pension accounts; case subsequently tried and conviction secured.">
+                        <td class="font-mono fir-no-cell">FIR 49/2026</td>
+                        <td>
+                            <div class="ps-cell-block">
+                                <span class="ps-name">Bhandara City PS</span>
+                                <span class="ps-dist">Dist: Bhandara</span>
+                            </div>
+                        </td>
+                        <td><span class="section-pill">BNS 319(2), IT 43</span></td>
+                        <td>
+                            <div class="parties-block">
+                                <span class="complainant-text">Suresh W. Lanjewar</span>
+                                <span class="accused-text">vs. Prakash J. Meshram</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="time-delta-block">
+                                <span class="occur-time">Occ: 12 Nov 11:30</span>
+                                <span class="rep-time">Rep: 14 Nov 15:45</span>
+                            </div>
+                        </td>
+                        <td>Insp. Rahul Sharma</td>
+                        <td>
+                            <span class="status-tag status-verified"><i class="ph-fill ph-seal-check"></i> SHO Signed</span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn-view-gazette" title="View Official FIR Form"><i class="ph ph-file-text"></i> View FIR</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<div class="modal-backdrop" id="firGazetteModal">
+    <div class="modal-dialog fir-gazette-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-shield-check modal-icon-badge"></i>
+                <div>
+                    <h3 id="gazetteHeaderTitle">FIR No. 124/2026</h3>
+                    <p id="gazetteHeaderSubtitle">State Police Crime Register • Section 173 BNSS Format</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="firGazetteModal"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="gazette-paper-sheet" id="printableFirPaper">
+                <div class="gazette-coat-arms">
+                    <span class="govt-label">MAHARASHTRA POLICE DEPARTMENT</span>
+                    <h4>FIRST INFORMATION REPORT (E-FIR)</h4>
+                    <span class="act-reference">Under Section 173 of Bharatiya Nagarik Suraksha Sanhita, 2023</span>
+                </div>
+
+                <div class="gazette-two-col-grid">
+                    <div class="gazette-field-cell">
+                        <span class="g-field-label">1. Police Station & District:</span>
+                        <span class="g-field-value font-mono" id="gazettePs">Cyber Cell PS, Dist. Bhandara</span>
+                    </div>
+                    <div class="gazette-field-cell">
+                        <span class="g-field-label">2. Statutory FIR Number & Year:</span>
+                        <span class="g-field-value font-mono" id="gazetteFirNumber">FIR 124/2026</span>
+                    </div>
+                    <div class="gazette-field-cell">
+                        <span class="g-field-label">3. Acts & Criminal Sections:</span>
+                        <span class="g-field-value font-mono text-gold" id="gazetteSections">BNS Sec 308(2), IT Act 66D</span>
+                    </div>
+                    <div class="gazette-field-cell">
+                        <span class="g-field-label">4. Assigned Investigation Officer:</span>
+                        <span class="g-field-value" id="gazetteIo">Insp. Rahul Sharma</span>
+                    </div>
+                    <div class="gazette-field-cell">
+                        <span class="g-field-label">5. Date & Hour of Occurrence:</span>
+                        <span class="g-field-value font-mono" id="gazetteOccurTime">01 Aug 2026, 23:15 IST</span>
+                    </div>
+                    <div class="gazette-field-cell">
+                        <span class="g-field-label">6. Date & Hour Reported to Station:</span>
+                        <span class="g-field-value font-mono" id="gazetteReportedTime">02 Aug 2026, 09:30 IST</span>
+                    </div>
+                </div>
+
+                <div class="gazette-full-row">
+                    <span class="g-field-label">7. Complainant / Informant:</span>
+                    <span class="g-field-value" id="gazetteComplainant">Axis Security Systems Ltd.</span>
+                </div>
+
+                <div class="gazette-full-row">
+                    <span class="g-field-label">8. Suspected / Accused Particulars:</span>
+                    <span class="g-field-value" id="gazetteAccused">Sandeep K. Verma</span>
+                </div>
+
+                <div class="gazette-summary-card">
+                    <span class="g-field-label">9. Gist of Information / Offense Summary:</span>
+                    <p class="g-summary-body" id="gazetteGistText">
+                        Unauthorized extraction of proprietary source binaries, corporate server intrusion, and extortion demand of INR 45 Lakhs via cryptographic currency.
+                    </p>
+                </div>
+
+                <div class="gazette-cryptographic-seal">
+                    <div class="seal-left">
+                        <span class="seal-header">Cryptographic Ingestion Hash (SHA-256):</span>
+                        <span class="font-mono seal-hash-code" id="gazetteHash">4f8a92b3c1048e91827419baedbc58129a01f8d9b2341256789abcdef0123456</span>
+                        <span class="seal-note">Vaulted immutably into TiDB Cluster • Tamper Protected</span>
+                    </div>
+                    <div class="seal-right">
+                        <div class="digital-sho-stamp" id="gazetteShoStamp">
+                            <i class="ph-fill ph-seal-check"></i>
+                            <span class="stamp-title">DIGITALLY SIGNED</span>
+                            <span class="stamp-sho" id="gazetteShoName">PI S. T. Shinde</span>
+                            <span class="stamp-id" id="gazetteShoId">MH-CID-8812</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" data-close="firGazetteModal">Close Record</button>
+            <button type="button" class="btn-primary-action" id="btnPrintFir">
+                <i class="ph ph-printer"></i> Print Gazette Copy
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="lodgeFirModal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-note-pencil modal-icon-badge"></i>
+                <div>
+                    <h3>Lodge Statutory Electronic FIR</h3>
+                    <p>Central Crime Register Gateway (Section 173 BNSS)</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="lodgeFirModal"><i class="ph ph-x"></i></button>
+        </div>
+        <form id="lodgeFirForm">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Police Station *</label>
+                        <input type="text" name="police_station" value="Cyber Cell PS, Bhandara" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Offense Classification *</label>
+                        <select name="category" required>
+                            <option value="cyber">Cyber Crime (IT Act)</option>
+                            <option value="cognizable">Regular Cognizable Offense</option>
+                            <option value="zero">Zero FIR (Transferred)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Complainant Full Name *</label>
+                        <input type="text" name="complainant" placeholder="e.g. Ramesh S. Patil" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Accused / Suspect (If Known)</label>
+                        <input type="text" name="accused" placeholder="e.g. Unidentified / Known Person">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Applicable Acts & Sections *</label>
+                    <input type="text" name="sections" placeholder="e.g. BNS 303(2), IT Act 66D" required>
+                </div>
+                <div class="form-group">
+                    <label>Gist of Offense (Narrative Summary) *</label>
+                    <textarea name="gist" rows="4" class="fir-textarea" placeholder="Detailed factual narrative of the occurrence..." required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-close="lodgeFirModal">Cancel</button>
+                <button type="submit" class="btn-submit-vault" id="btnSubmitFir">
+                    <i class="ph ph-lock-key"></i> Register & Dispatch to IO
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/firs.js' %}"></script>
+{% endblock %}

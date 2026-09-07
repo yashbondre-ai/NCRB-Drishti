@@ -1,0 +1,571 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Dashboard | NCRB-Drishti{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+{% block content %}
+<div class="dashboard-container">
+    <section class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-blue">
+                <i class="ph-fill ph-folder"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Total Cases</span>
+                <h3 class="kpi-value">1,248</h3>
+                <span class="kpi-trend trend-up"><i class="ph ph-arrow-up"></i> 12 this week</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-purple">
+                <i class="ph-fill ph-file-text"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Total Documents</span>
+                <h3 class="kpi-value">8,642</h3>
+                <span class="kpi-trend trend-up"><i class="ph ph-arrow-up"></i> 84 this week</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-amber">
+                <i class="ph-fill ph-clipboard-text"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">FIRs</span>
+                <h3 class="kpi-value">2,340</h3>
+                <span class="kpi-trend trend-up"><i class="ph ph-arrow-up"></i> 18 this week</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-teal">
+                <i class="ph-fill ph-chart-bar"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Reports</span>
+                <h3 class="kpi-value">1,840</h3>
+                <span class="kpi-trend trend-up"><i class="ph ph-arrow-up"></i> 26 this week</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-cyan">
+                <i class="ph-fill ph-users"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Active Users</span>
+                <h3 class="kpi-value">312</h3>
+                <span class="kpi-trend trend-up"><i class="ph ph-arrow-up"></i> 8 this week</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-danger">
+                <i class="ph-fill ph-shield-check"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">System Health</span>
+                <h3 class="kpi-value">98%</h3>
+                <span class="kpi-trend trend-health">Excellent</span>
+            </div>
+        </div>
+    </section>
+    <section class="analytics-grid">
+        <div class="panel-card doc-overview-panel">
+            <div class="panel-header">
+                <h4>Document Overview</h4>
+                <a href="#" class="panel-link">View All</a>
+            </div>
+            <div class="donut-chart-container">
+                <div class="chart-wrapper">
+                    <canvas id="docChart" width="170" height="170"></canvas>
+                    <div class="chart-center-metric">
+                        <span class="center-total">8,642</span>
+                        <span class="center-desc">Total Documents</span>
+                    </div>
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-row">
+                        <span class="legend-indicator dot-fir"></span>
+                        <span class="legend-name">FIRs</span>
+                        <span class="legend-pct">27%</span>
+                    </div>
+                    <div class="legend-row">
+                        <span class="legend-indicator dot-investigation"></span>
+                        <span class="legend-name">Investigation Reports</span>
+                        <span class="legend-pct">21%</span>
+                    </div>
+                    <div class="legend-row">
+                        <span class="legend-indicator dot-chargesheet"></span>
+                        <span class="legend-name">Charge Sheets</span>
+                        <span class="legend-pct">18%</span>
+                    </div>
+                    <div class="legend-row">
+                        <span class="legend-indicator dot-court"></span>
+                        <span class="legend-name">Court Documents</span>
+                        <span class="legend-pct">16%</span>
+                    </div>
+                    <div class="legend-row">
+                        <span class="legend-indicator dot-evidence"></span>
+                        <span class="legend-name">Evidence</span>
+                        <span class="legend-pct">12%</span>
+                    </div>
+                    <div class="legend-row">
+                        <span class="legend-indicator dot-other"></span>
+                        <span class="legend-name">Other Documents</span>
+                        <span class="legend-pct">6%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-card">
+            <div class="panel-header">
+                <h4>Recent Activity</h4>
+                <a href="#" class="panel-link">View All</a>
+            </div>
+            <div class="activity-feed">
+                <div class="activity-item">
+                    <div class="act-icon icon-success"><i class="ph ph-upload-simple"></i></div>
+                    <div class="act-details">
+                        <p class="act-title"><strong>FIR_124_2024.pdf</strong> uploaded</p>
+                        <span class="act-author">by Rahul Sharma</span>
+                    </div>
+                    <span class="act-time">2 min ago</span>
+                </div>
+                <div class="activity-item">
+                    <div class="act-icon icon-purple"><i class="ph ph-eye"></i></div>
+                    <div class="act-details">
+                        <p class="act-title"><strong>Investigation_Report_87.pdf</strong> viewed</p>
+                        <span class="act-author">by Amit Verma</span>
+                    </div>
+                    <span class="act-time">15 min ago</span>
+                </div>
+                <div class="activity-item">
+                    <div class="act-icon icon-amber"><i class="ph ph-download-simple"></i></div>
+                    <div class="act-details">
+                        <p class="act-title"><strong>Charge_Sheet_56.pdf</strong> downloaded</p>
+                        <span class="act-author">by Neha Patil</span>
+                    </div>
+                    <span class="act-time">1 hour ago</span>
+                </div>
+                <div class="activity-item">
+                    <div class="act-icon icon-blue"><i class="ph ph-file-arrow-up"></i></div>
+                    <div class="act-details">
+                        <p class="act-title"><strong>Forensic_Report_12.pdf</strong> uploaded</p>
+                        <span class="act-author">by System</span>
+                    </div>
+                    <span class="act-time">2 hours ago</span>
+                </div>
+                <div class="activity-item">
+                    <div class="act-icon icon-amber"><i class="ph ph-key"></i></div>
+                    <div class="act-details">
+                        <p class="act-title">Permission updated for <strong>Case-2024-001</strong></p>
+                        <span class="act-author">by Admin</span>
+                    </div>
+                    <span class="act-time">3 hours ago</span>
+                </div>
+            </div>
+        </div>
+        <div class="panel-card">
+            <div class="panel-header">
+                <h4>Security Alerts</h4>
+                <a href="#" class="panel-link">View All</a>
+            </div>
+            <div class="alert-feed">
+                <div class="alert-item alert-danger">
+                    <div class="alert-icon-box"><i class="ph ph-shield-warning"></i></div>
+                    <div class="alert-info">
+                        <span class="alert-type">Unauthorized login attempt</span>
+                        <span class="alert-meta">IP: 192.168.1.45</span>
+                    </div>
+                    <span class="alert-timestamp">10:20 AM</span>
+                </div>
+                <div class="alert-item alert-danger">
+                    <div class="alert-icon-box pulse"><i class="ph ph-warning-octagon"></i></div>
+                    <div class="alert-info">
+                        <span class="alert-type">Document tampering detected</span>
+                        <span class="alert-meta">Document: Evidence_33.pdf</span>
+                    </div>
+                    <span class="alert-timestamp">Yesterday</span>
+                </div>
+                <div class="alert-item alert-warning">
+                    <div class="alert-icon-box"><i class="ph ph-clock-countdown"></i></div>
+                    <div class="alert-info">
+                        <span class="alert-type">Session timeout warning</span>
+                        <span class="alert-meta">User: Guest (ID: 5689)</span>
+                    </div>
+                    <span class="alert-timestamp">10 Aug 2024</span>
+                </div>
+                <div class="alert-item alert-success">
+                    <div class="alert-icon-box"><i class="ph ph-device-mobile"></i></div>
+                    <div class="alert-info">
+                        <span class="alert-type">New device login</span>
+                        <span class="alert-meta">User: Rahul Sharma</span>
+                    </div>
+                    <span class="alert-timestamp">09 Aug 2024</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bottom-operations-grid">
+        <div class="panel-card data-table-panel">
+            <div class="panel-header">
+                <div class="table-title-area">
+                    <h4>Recent Documents</h4>
+                    <div class="table-filter-group">
+                        <button class="filter-chip active" data-filter="all">All</button>
+                        <button class="filter-chip" data-filter="verified">Verified</button>
+                        <button class="filter-chip" data-filter="flagged">Flagged</button>
+                    </div>
+                </div>
+                <a href="#" class="panel-link">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="lex-table" id="evidenceTable">
+                    <thead>
+                        <tr>
+                            <th>Document Name</th>
+                            <th>Case ID</th>
+                            <th>Type</th>
+                            <th>Uploaded By</th>
+                            <th>Uploaded On</th>
+                            <th>Status</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-status="verified" data-doc="FIR_124_2024.pdf" data-case="CASE-2024-001" data-officer="Rahul Sharma" data-hash="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855">
+                            <td class="file-name-cell">
+                                <span class="doc-badge badge-red">PDF</span>
+                                <span class="doc-title">FIR_124_2024.pdf</span>
+                            </td>
+                            <td class="font-mono">CASE-2024-001</td>
+                            <td>FIR</td>
+                            <td>Rahul Sharma</td>
+                            <td>12 Aug 2024 10:30 AM</td>
+                            <td>
+                                <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Verified</span>
+                            </td>
+                            <td class="text-right">
+                                <button class="action-btn btn-view-custody" title="View Chain of Custody"><i class="ph ph-tree-structure"></i></button>
+                                <button class="action-btn btn-view-cert" title="View 65B Certificate"><i class="ph ph-certificate"></i></button>
+                            </td>
+                        </tr>
+                        <tr data-status="verified" data-doc="Investigation_Report_87.pdf" data-case="CASE-2024-001" data-officer="Rahul Sharma" data-hash="7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730">
+                            <td class="file-name-cell">
+                                <span class="doc-badge badge-red">PDF</span>
+                                <span class="doc-title">Investigation_Report_87.pdf</span>
+                            </td>
+                            <td class="font-mono">CASE-2024-001</td>
+                            <td>Report</td>
+                            <td>Rahul Sharma</td>
+                            <td>12 Aug 2024 10:15 AM</td>
+                            <td>
+                                <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Verified</span>
+                            </td>
+                            <td class="text-right">
+                                <button class="action-btn btn-view-custody" title="View Chain of Custody"><i class="ph ph-tree-structure"></i></button>
+                                <button class="action-btn btn-view-cert" title="View 65B Certificate"><i class="ph ph-certificate"></i></button>
+                            </td>
+                        </tr>
+                        <tr data-status="verified" data-doc="Witness_Statement_1.pdf" data-case="CASE-2024-002" data-officer="Amit Verma" data-hash="ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb">
+                            <td class="file-name-cell">
+                                <span class="doc-badge badge-red">PDF</span>
+                                <span class="doc-title">Witness_Statement_1.pdf</span>
+                            </td>
+                            <td class="font-mono">CASE-2024-002</td>
+                            <td>Statement</td>
+                            <td>Amit Verma</td>
+                            <td>11 Aug 2024 04:45 PM</td>
+                            <td>
+                                <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Verified</span>
+                            </td>
+                            <td class="text-right">
+                                <button class="action-btn btn-view-custody" title="View Chain of Custody"><i class="ph ph-tree-structure"></i></button>
+                                <button class="action-btn btn-view-cert" title="View 65B Certificate"><i class="ph ph-certificate"></i></button>
+                            </td>
+                        </tr>
+                        <tr data-status="flagged" data-doc="Evidence_33.pdf" data-case="CASE-2024-003" data-officer="Neha Patil" data-hash="a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e">
+                            <td class="file-name-cell">
+                                <span class="doc-badge badge-red">PDF</span>
+                                <span class="doc-title">Evidence_33.pdf</span>
+                            </td>
+                            <td class="font-mono">CASE-2024-003</td>
+                            <td>Evidence</td>
+                            <td>Neha Patil</td>
+                            <td>11 Aug 2024 11:00 AM</td>
+                            <td>
+                                <span class="status-tag status-flagged"><i class="ph-fill ph-warning-circle"></i> Tampered</span>
+                            </td>
+                            <td class="text-right">
+                                <button class="action-btn btn-view-custody" title="View Chain of Custody"><i class="ph ph-tree-structure"></i></button>
+                                <button class="action-btn btn-view-cert" title="View 65B Certificate"><i class="ph ph-certificate"></i></button>
+                            </td>
+                        </tr>
+                        <tr data-status="verified" data-doc="CCTV_Evidence_01.mp4" data-case="CASE-2024-001" data-officer="System" data-hash="b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9">
+                            <td class="file-name-cell">
+                                <span class="doc-badge badge-blue">MP4</span>
+                                <span class="doc-title">CCTV_Evidence_01.mp4</span>
+                            </td>
+                            <td class="font-mono">CASE-2024-001</td>
+                            <td>Evidence</td>
+                            <td>System</td>
+                            <td>10 Aug 2024 02:00 PM</td>
+                            <td>
+                                <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Verified</span>
+                            </td>
+                            <td class="text-right">
+                                <button class="action-btn btn-view-custody" title="View Chain of Custody"><i class="ph ph-tree-structure"></i></button>
+                                <button class="action-btn btn-view-cert" title="View 65B Certificate"><i class="ph ph-certificate"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-pagination">
+                <span class="pagination-info" id="tableCountText">Showing 5 of 5 records</span>
+                <div class="pagination-controls">
+                    <button class="pag-btn" disabled><i class="ph ph-caret-left"></i></button>
+                    <button class="pag-btn active">1</button>
+                    <button class="pag-btn"><i class="ph ph-caret-right"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="panel-card quick-actions-panel">
+            <div class="panel-header">
+                <h4>Quick Actions</h4>
+            </div>
+            <div class="actions-grid">
+                <button class="action-tile" id="btnOpenUploadModal">
+                    <div class="tile-icon"><i class="ph ph-cloud-arrow-up"></i></div>
+                    <span class="tile-label">Upload Document</span>
+                </button>
+                <button class="action-tile" id="btnTriggerCustodyDemo">
+                    <div class="tile-icon"><i class="ph ph-cube"></i></div>
+                    <span class="tile-label">Chain of Custody</span>
+                </button>
+                <button class="action-tile" id="btnTriggerCertDemo">
+                    <div class="tile-icon"><i class="ph ph-certificate"></i></div>
+                    <span class="tile-label">Issue 65B</span>
+                </button>
+                <button class="action-tile">
+                    <div class="tile-icon"><i class="ph ph-folder-plus"></i></div>
+                    <span class="tile-label">Create New Case</span>
+                </button>
+                <button class="action-tile">
+                    <div class="tile-icon"><i class="ph ph-robot"></i></div>
+                    <span class="tile-label">AI Assistant</span>
+                </button>
+                <button class="action-tile">
+                    <div class="tile-icon"><i class="ph ph-magnifying-glass"></i></div>
+                    <span class="tile-label">Advanced Search</span>
+                </button>
+                <button class="action-tile">
+                    <div class="tile-icon"><i class="ph ph-clipboard-text"></i></div>
+                    <span class="tile-label">Audit Trail</span>
+                </button>
+                <button class="action-tile">
+                    <div class="tile-icon"><i class="ph ph-users-three"></i></div>
+                    <span class="tile-label">Users & Roles</span>
+                </button>
+                <button class="action-tile">
+                    <div class="tile-icon"><i class="ph ph-gear"></i></div>
+                    <span class="tile-label">System Settings</span>
+                </button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="modal-backdrop" id="uploadModal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-shield-check modal-icon-badge"></i>
+                <div>
+                    <h3>Secure Evidence Vault Ingestion</h3>
+                    <p>BSA Sec 63/65B Compliant Hashing Gateway</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="uploadModal"><i class="ph ph-x"></i></button>
+        </div>
+        <form id="evidenceUploadForm">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Case Number *</label>
+                        <input type="text" name="case_id" placeholder="e.g. CASE-2026-081" required value="CASE-2026-MH01">
+                    </div>
+                    <div class="form-group">
+                        <label>Document Classification *</label>
+                        <select name="category" required>
+                            <option value="FIR">First Information Report (FIR)</option>
+                            <option value="Forensic">Forensic Lab Report</option>
+                            <option value="Statement">Witness Statement</option>
+                            <option value="Digital Media">CCTV / Audio Evidence</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="dropzone-box" id="dropzoneBox">
+                    <input type="file" id="evidenceFileInput" name="evidence_file" class="file-input-hidden" required>
+                    <i class="ph ph-file-arrow-up dropzone-icon"></i>
+                    <p class="dropzone-text">Drag & drop evidence file here, or <span>Browse</span></p>
+                    <span class="dropzone-hint">Accepts PDF, MP4, WAV, JPG (Max 50MB)</span>
+                </div>
+                <div class="hash-calculation-card" id="hashCalculationCard" style="display: none;">
+                    <div class="hash-meta-row">
+                        <span class="hash-file-name" id="selectedFileName">file.pdf</span>
+                        <span class="hash-file-size" id="selectedFileSize">0 KB</span>
+                    </div>
+                    <div class="hash-output-wrap">
+                        <label>Cryptographic SHA-256 Fingerprint</label>
+                        <div class="hash-value-box">
+                            <span id="calculatedHashString">Computing SHA-256...</span>
+                            <button type="button" class="btn-copy-hash" id="btnCopyHash"><i class="ph ph-copy"></i></button>
+                        </div>
+                    </div>
+                    <div class="hash-status-pill">
+                        <i class="ph-fill ph-check-circle"></i> Integrity Verified Prior to Ingestion
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-close="uploadModal">Cancel</button>
+                <button type="submit" class="btn-submit-vault" id="btnVaultSubmit">
+                    <i class="ph ph-lock-key"></i> Seal & Vault Evidence
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="custodyModal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-tree-structure modal-icon-badge"></i>
+                <div>
+                    <h3>Chain of Custody Verification</h3>
+                    <p id="custodyDocLabel">Document: FIR_124_2024.pdf</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="custodyModal"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="custody-timeline">
+                <div class="timeline-step">
+                    <div class="step-marker completed"></div>
+                    <div class="step-content">
+                        <span class="step-time">12 Aug 2026 • 10:30 AM</span>
+                        <h4>Seizure & Cryptographic Registration</h4>
+                        <p>File seized and SHA-256 signature generated locally.</p>
+                        <span class="step-agent">Agent: Insp. Rahul Sharma (CID Bhandara)</span>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="step-marker completed"></div>
+                    <div class="step-content">
+                        <span class="step-time">12 Aug 2026 • 10:31 AM</span>
+                        <h4>TiDB Cloud Immutable Vaulting</h4>
+                        <p>Cryptographic ledger record committed to distributed database.</p>
+                        <span class="step-agent">Target: NCRB Evidence Ledger Block #89104</span>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="step-marker completed"></div>
+                    <div class="step-content">
+                        <span class="step-time">12 Aug 2026 • 11:15 AM</span>
+                        <h4>Forensic Checksum Audit</h4>
+                        <p>Zero-alteration audit verified across replication nodes.</p>
+                        <span class="step-agent">Auditor: DFSL Digital Validator Node 02</span>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="step-marker active"></div>
+                    <div class="step-content">
+                        <span class="step-time">Current State</span>
+                        <h4>Active Judicial Hold</h4>
+                        <p>Evidence locked for Sessions Court trial production.</p>
+                        <span class="step-agent">Authorized Receiver: Public Prosecutor</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" data-close="custodyModal">Close</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="certModal">
+    <div class="modal-dialog modal-cert-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-scales modal-icon-badge"></i>
+                <div>
+                    <h3>Section 63/65B BSA Certificate</h3>
+                    <p>Admissibility Certification for Electronic Records</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="certModal"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="certificate-paper" id="printableCertArea">
+                <div class="cert-header">
+                    <span class="gov-text">NATIONAL CRIME RECORDS BUREAU</span>
+                    <h5>CENTRAL DIGITAL EVIDENCE VAULT • DRISHTI</h5>
+                    <h6>CERTIFICATE UNDER SECTION 63 / 65B OF BHARATIYA SAKSHYA ADHINIYAM, 2023</h6>
+                </div>
+                <div class="cert-body-text">
+                    <p>This is to certify that the electronic record identified below has been generated, stored, and retrieved through an authorized and cryptographically secured system operating under standard custody protocols.</p>
+                    <table class="cert-spec-table">
+                        <tr>
+                            <td><strong>Document Name:</strong></td>
+                            <td id="certDocName">FIR_124_2024.pdf</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Case Register:</strong></td>
+                            <td id="certCaseId">CASE-2024-001</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Seizure Officer:</strong></td>
+                            <td id="certOfficer">Insp. Rahul Sharma</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SHA-256 Digest:</strong></td>
+                            <td class="font-mono-break" id="certHashVal">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Storage Node:</strong></td>
+                            <td>TiDB Cloud Distributed Cluster • Cluster ID #IN-MHA-01</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tamper Verification:</strong></td>
+                            <td>PASSED (Bit-level exact match across ledger)</td>
+                        </tr>
+                    </table>
+                    <div class="cert-seal-row">
+                        <div class="cert-seal-box">
+                            <i class="ph-fill ph-seal-check"></i>
+                            <span>CRYPTOGRAPHICALLY SEALED</span>
+                        </div>
+                        <div class="cert-sign-box">
+                            <span class="sign-line"></span>
+                            <span class="sign-text">Authorized Forensic Signatory</span>
+                            <span class="sign-sub">NCRB Electronic Records Division</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" data-close="certModal">Close</button>
+            <button type="button" class="btn-submit-vault" id="btnPrintCert">
+                <i class="ph ph-printer"></i> Print / Export Certificate
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

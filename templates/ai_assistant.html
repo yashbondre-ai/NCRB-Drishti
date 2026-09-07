@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Forensic AI Copilot | NCRB-Drishti{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/ai_assistant.css' %}">
+{% endblock %}
+
+{% block page_title %}Forensic Legal Copilot & Regulatory Reasoning Engine{% endblock %}
+{% block page_subtitle %}Automated Statutory Mapping (BNS/BNSS) • Cross-Evidence Contradiction Detection • Court-Grounded Narrative Synthesis{% endblock %}
+
+{% block content %}
+<div class="ai-assistant-container">
+    <aside class="ai-context-panel">
+        <div class="panel-section-title">
+            <i class="ph-fill ph-briefcase"></i>
+            <span>Active Case Docket Context</span>
+        </div>
+        <div class="case-selector-box">
+            <label>Investigative Target</label>
+            <select id="aiCaseSelector">
+                <option value="CR-2026-MH01" selected>CR-2026-MH01: State vs. Sandeep K. Verma</option>
+                <option value="CR-2026-MH04">CR-2026-MH04: State vs. Rakesh M. Gaikwad</option>
+                <option value="CR-2026-MH09">CR-2026-MH09: State vs. Nikhil R. Tembhare</option>
+                <option value="CR-2026-MH14">CR-2026-MH14: State vs. Unknown Syndicate</option>
+            </select>
+        </div>
+
+        <div class="context-docket-summary" id="contextDocketSummary">
+            <div class="summary-line">
+                <span class="s-label">Classification:</span>
+                <span class="s-val text-gold">Cyber Extortion & Espionage</span>
+            </div>
+            <div class="summary-line">
+                <span class="s-label">Lead IO:</span>
+                <span class="s-val">Insp. Rahul Sharma</span>
+            </div>
+            <div class="summary-line">
+                <span class="s-label">Vaulted Evidence:</span>
+                <span class="s-val font-mono text-teal">6 Items (SHA-256 Sealed)</span>
+            </div>
+            <div class="summary-line">
+                <span class="s-label">Jurisdiction:</span>
+                <span class="s-val">Sessions Court, Bhandara</span>
+            </div>
+        </div>
+
+        <div class="panel-section-title mt-4">
+            <i class="ph-fill ph-lightning"></i>
+            <span>Forensic Reasoning Triggers</span>
+        </div>
+        <div class="quick-prompts-cluster">
+            <button class="prompt-chip" data-prompt="Analyze FIR and vault evidence to map applicable BNS and IT Act sections with statutory penalties.">
+                <i class="ph ph-scales"></i>
+                <span>Map Statutory BNS Sections</span>
+            </button>
+            <button class="prompt-chip" data-prompt="Cross-examine Accused interrogation logs against CCTV and RAM dump timestamps for timeline contradictions.">
+                <i class="ph ph-git-diff"></i>
+                <span>Detect Statement Contradictions</span>
+            </button>
+            <button class="prompt-chip" data-prompt="Synthesize formal Charge Sheet investigative narrative under Section 193 BNSS for trial submission.">
+                <i class="ph ph-file-text"></i>
+                <span>Draft Section 193 BNSS Charge Sheet</span>
+            </button>
+            <button class="prompt-chip" data-prompt="Verify cryptographic admissibility certificate under Section 63/65B BSA for all vaulted digital records.">
+                <i class="ph ph-certificate"></i>
+                <span>Audit BSA Section 65B Validity</span>
+            </button>
+        </div>
+
+        <div class="ai-model-enclave-tag">
+            <div class="enclave-status-dot"></div>
+            <div>
+                <span class="enclave-title">Juris-LLM v4.2 Secured</span>
+                <span class="enclave-sub">Air-gapped on-premise inference</span>
+            </div>
+        </div>
+    </aside>
+
+    <section class="ai-conversation-stream">
+        <div class="chat-header-bar">
+            <div class="chat-header-info">
+                <div class="ai-avatar-badge">
+                    <i class="ph-fill ph-robot"></i>
+                </div>
+                <div>
+                    <h4>Drishti Forensic Legal Copilot</h4>
+                    <p>Grounding: Active Case CR-2026-MH01 • Distributed TiDB Evidence Cluster</p>
+                </div>
+            </div>
+            <button class="btn-clear-chat" id="btnClearChat" title="Reset Session"><i class="ph ph-arrow-counter-clockwise"></i> Reset</button>
+        </div>
+
+        <div class="chat-messages-scroll" id="chatMessagesScroll">
+            <div class="chat-bubble bubble-assistant">
+                <div class="bubble-header">
+                    <span class="bubble-sender"><i class="ph-fill ph-shield-check text-teal"></i> DRISHTI FORENSIC COPILOT</span>
+                    <span class="bubble-timestamp">Just Now</span>
+                </div>
+                <div class="bubble-body">
+                    <p>Evidence index and statutory case register for <strong>CR-2026-MH01</strong> have been successfully verified against the TiDB ledger. 6 vaulted artifacts (including FIR, surveillance footage, and volatile memory extracts) are currently active in memory.</p>
+                    <p>Select a reasoning trigger on the left or type an investigative query below to begin statutory analysis.</p>
+                </div>
+            </div>
+        </div>
+
+        <form class="chat-input-wrapper" id="chatInputForm">
+            <div class="input-container-inner">
+                <textarea id="chatInputText" rows="1" placeholder="Ask legal copilot to audit evidence, extract sections, or compile court dossiers..." required></textarea>
+                <button type="submit" class="btn-chat-send" id="btnChatSend">
+                    <i class="ph-fill ph-paper-plane-right"></i>
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <aside class="ai-evidence-grounding-panel">
+        <div class="panel-section-title">
+            <i class="ph-fill ph-fingerprint"></i>
+            <span>Cited Evidence Artifacts</span>
+        </div>
+        <p class="grounding-subtext">All facts synthesized by the copilot are anchored to cryptographic hashes in the vault:</p>
+
+        <div class="grounded-artifacts-stack" id="groundedArtifactsStack">
+            <div class="grounded-card">
+                <div class="grounded-top">
+                    <span class="doc-badge badge-red">PDF</span>
+                    <span class="font-mono text-gold">CR-2026-MH01</span>
+                </div>
+                <span class="grounded-file-title">FIR_MH26_0124.pdf</span>
+                <span class="grounded-hash font-mono">SHA-256: 4f8a92b3c1048e91827419ba...0123</span>
+                <div class="grounded-meta-status">
+                    <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> TiDB Block #89104</span>
+                </div>
+            </div>
+
+            <div class="grounded-card">
+                <div class="grounded-top">
+                    <span class="doc-badge badge-blue">MP4</span>
+                    <span class="font-mono text-gold">CR-2026-MH01</span>
+                </div>
+                <span class="grounded-file-title">CCTV_ServerRoom_Access.mp4</span>
+                <span class="grounded-hash font-mono">SHA-256: b94d27b9934d3e08a52e52d7...fcde</span>
+                <div class="grounded-meta-status">
+                    <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> TiDB Block #89112</span>
+                </div>
+            </div>
+
+            <div class="grounded-card">
+                <div class="grounded-top">
+                    <span class="doc-badge badge-teal">RAW</span>
+                    <span class="font-mono text-gold">CR-2026-MH01</span>
+                </div>
+                <span class="grounded-file-title">Forensic_MemoryDump_Analysis.raw</span>
+                <span class="grounded-hash font-mono">SHA-256: 7d865e959b2466918c9863af...9773</span>
+                <div class="grounded-meta-status">
+                    <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> TiDB Block #89145</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="vault-consensus-badge">
+            <i class="ph-fill ph-seal-check"></i>
+            <div>
+                <span>Zero Hallucination Assurance</span>
+                <p>Every finding verified against SHA-256 consensus ledger.</p>
+            </div>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/ai_assistant.js' %}"></script>
+{% endblock %}

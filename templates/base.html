@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}NCRB-Drishti{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <i class="ph-fill ph-scales"></i>
+                <div class="brand-text">
+                    <h1>NCRB-Drishti</h1>
+                    <span>Secure Digital Document Management System</span>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/" class="menu-item active">
+                    <i class="ph ph-house"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/cases/" class="menu-item">
+                    <i class="ph ph-folder"></i>
+                    <span>Cases</span>
+                </a>
+                <a href="/documents/" class="menu-item">
+                    <i class="ph ph-file-text"></i>
+                    <span>Documents</span>
+                </a>
+                <a href="/firs/" class="menu-item">
+                    <i class="ph ph-clipboard-text"></i>
+                    <span>FIRs</span>
+                </a>
+                <a href="/reports/" class="menu-item">
+                    <i class="ph ph-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="/ai-assistant/" class="menu-item">
+                    <i class="ph ph-robot"></i>
+                    <span>AI Assistant</span>
+                </a>
+                <a href="/audit-trail/" class="menu-item">
+                    <i class="ph ph-clock-counter-clockwise"></i>
+                    <span>Audit Trail</span>
+                </a>
+                <a href="/blockchain/" class="menu-item">
+                    <i class="ph ph-cube"></i>
+                    <span>Blockchain Verify</span>
+                </a>
+                <a href="/users/" class="menu-item">
+                    <i class="ph ph-users"></i>
+                    <span>Users & Roles</span>
+                </a>
+                <a href="/alerts/" class="menu-item">
+                    <i class="ph ph-bell"></i>
+                    <span>Alerts</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="ph ph-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-bottom">
+                <div class="storage-widget">
+                    <div class="storage-meta">
+                        <span class="storage-title">System Storage</span>
+                        <span class="storage-percentage">48% Used</span>
+                    </div>
+                    <span class="storage-details">245.6 GB / 512 GB</span>
+                    <div class="storage-bar">
+                        <div class="storage-progress"></div>
+                    </div>
+                </div>
+                <div class="user-profile-sm">
+                    <img src="https://ui-avatars.com/api/?name=Rahul+Sharma&background=2E4270&color=F1F5F9" alt="User">
+                    <div class="user-info">
+                        <span class="user-name">Rahul Sharma</span>
+                        <span class="user-role">Investigation Officer</span>
+                        <span class="user-status"><span class="status-dot"></span> Online</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <div class="main-wrapper">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button type="button" class="sidebar-toggle" id="sidebarToggleBtn">
+                        <i class="ph ph-list"></i>
+                    </button>
+                    <div class="page-title-block">
+                        <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+                        <p>{% block page_subtitle %}Welcome back, Rahul Sharma! Here's what's happening with your system today.{% endblock %}</p>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="search-container">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <input type="text" placeholder="Search documents, cases, FIRs, reports...">
+                        <span class="search-shortcut">Ctrl + K</span>
+                    </div>
+                    <div class="notification-wrapper">
+                        <button type="button" class="topbar-icon-btn">
+                            <i class="ph-fill ph-bell"></i>
+                            <span class="notification-badge">5</span>
+                        </button>
+                    </div>
+                    <div class="profile-section">
+                        <div class="topbar-profile">
+                            <img src="https://ui-avatars.com/api/?name=Rahul+Sharma&background=2E4270&color=F1F5F9" alt="User Avatar">
+                            <div class="profile-details">
+                                <span class="name">Rahul Sharma</span>
+                                <span class="role">Investigation Officer</span>
+                            </div>
+                            <i class="ph ph-caret-down"></i>
+                        </div>
+                        <div class="server-time">
+                            <i class="ph ph-calendar-blank"></i>
+                            <span id="liveClock">12 Aug 2026 | 10:30 AM</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <main class="content-container">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    <script src="{% static 'js/base.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

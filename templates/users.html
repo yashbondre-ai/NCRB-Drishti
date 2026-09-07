@@ -1,0 +1,577 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Access Control & Statutory Roles | NCRB-Drishti{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users.css' %}">
+{% endblock %}
+
+{% block page_title %}Statutory Role-Based Access Control (RBAC) Ledger{% endblock %}
+{% block page_subtitle %}Departmental Security Clearances • Cryptographic Token Binding & Delegation Matrix{% endblock %}
+
+{% block content %}
+<div class="users-roles-wrapper">
+    <section class="roles-selection-strip">
+        <div class="roles-scroll-track">
+            <button class="role-chip active" data-role="all">All Roles</button>
+            <button class="role-chip" data-role="super_admin">Super Admin</button>
+            <button class="role-chip" data-role="dept_admin">Department Admin</button>
+            <button class="role-chip" data-role="investigation_officer">Investigation Officer</button>
+            <button class="role-chip" data-role="case_officer">Case Officer</button>
+            <button class="role-chip" data-role="legal_officer">Legal Officer</button>
+            <button class="role-chip" data-role="forensic_officer">Evidence/Forensic Officer</button>
+            <button class="role-chip" data-role="reviewer">Reviewer / Approver</button>
+            <button class="role-chip" data-role="auditor">Auditor</button>
+            <button class="role-chip" data-role="viewer">Viewer</button>
+        </div>
+    </section>
+
+    <div class="access-split-grid">
+        <aside class="permissions-matrix-panel">
+            <div class="matrix-panel-head">
+                <div class="matrix-title-group">
+                    <i class="ph-fill ph-shield-check text-gold"></i>
+                    <div>
+                        <h4 id="activeRoleTitle">Super Admin</h4>
+                        <span class="role-responsibility-label font-mono" id="activeRoleResp">System-wide administration</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="matrix-rules-list">
+                <div class="rule-entry-row">
+                    <div class="rule-left">
+                        <span class="rule-name">Manage Users, Roles & Configuration</span>
+                        <span class="rule-desc">Add/revoke users, define roles, system configuration</span>
+                    </div>
+                    <span class="permission-check enabled" id="permUserConfig"><i class="ph-fill ph-check"></i></span>
+                </div>
+
+                <div class="rule-entry-row">
+                    <div class="rule-left">
+                        <span class="rule-name">Department User & Case Delegation</span>
+                        <span class="rule-desc">Create departmental cases and assign investigations</span>
+                    </div>
+                    <span class="permission-check enabled" id="permDeptCase"><i class="ph-fill ph-check"></i></span>
+                </div>
+
+                <div class="rule-entry-row">
+                    <div class="rule-left">
+                        <span class="rule-name">Evidence Upload & Metadata Management</span>
+                        <span class="rule-desc">Commit raw evidence, SHA-256 digests, and metadata</span>
+                    </div>
+                    <span class="permission-check enabled" id="permEvidenceUpload"><i class="ph-fill ph-check"></i></span>
+                </div>
+
+                <div class="rule-entry-row">
+                    <div class="rule-left">
+                        <span class="rule-name">Legal Court Filings & Record Access</span>
+                        <span class="rule-desc">Court filings, judgment uploads, and legal dockets</span>
+                    </div>
+                    <span class="permission-check enabled" id="permLegalDocs"><i class="ph-fill ph-check"></i></span>
+                </div>
+
+                <div class="rule-entry-row">
+                    <div class="rule-left">
+                        <span class="rule-name">Document Integrity Verification & Approval</span>
+                        <span class="rule-desc">Verify hashes, review, approve or reject case files</span>
+                    </div>
+                    <span class="permission-check enabled" id="permReviewApprove"><i class="ph-fill ph-check"></i></span>
+                </div>
+
+                <div class="rule-entry-row">
+                    <div class="rule-left">
+                        <span class="rule-name">Full Audit Log & Telemetry Access</span>
+                        <span class="rule-desc">Read-only audit trails, document history and access logs</span>
+                    </div>
+                    <span class="permission-check enabled" id="permAuditLogs"><i class="ph-fill ph-check"></i></span>
+                </div>
+
+                <div class="rule-entry-row">
+                    <div class="rule-left">
+                        <span class="rule-name">Restricted Read-Only Stakeholder Access</span>
+                        <span class="rule-desc">Explicitly authorized viewing without modify privilege</span>
+                    </div>
+                    <span class="permission-check enabled" id="permViewOnly"><i class="ph-fill ph-check"></i></span>
+                </div>
+            </div>
+
+            <div class="hardware-token-enclave-box">
+                <div class="token-box-top">
+                    <i class="ph-fill ph-key text-teal"></i>
+                    <div>
+                        <span class="token-box-title">Cryptographic FIDO2 Enclave</span>
+                        <p class="token-box-sub">Role elevation requires physical hardware key verification.</p>
+                    </div>
+                </div>
+                <button class="btn-provision-token" id="btnOpenProvisionModal">
+                    <i class="ph ph-plus-circle"></i>
+                    <span>Assign Role & Hardware Key</span>
+                </button>
+            </div>
+        </aside>
+
+        <section class="officers-directory-panel">
+            <div class="directory-control-line">
+                <div class="officer-search-box">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" id="officerSearchInput" placeholder="Filter personnel by name, badge ID, department, or role...">
+                </div>
+                <span class="officer-count-label" id="officerCountLabel">Showing 9 Officers</span>
+            </div>
+
+            <div class="officers-badges-grid" id="officersBadgesGrid">
+                <div class="officer-credential-card" 
+                     data-role="super_admin"
+                     data-name="V. S. Kulkarni, IPS"
+                     data-id="MHA-IPS-001"
+                     data-dept="Central Command HQ"
+                     data-token="YubiKey 5C FIDO2"
+                     data-fp="SHA-256: 9a01f8d9b2341256789abcdef01234564f8a92b3c1048e91827419baedbc5812">
+                    <div class="card-header-line">
+                        <span class="role-badge badge-super-admin">SUPER ADMIN</span>
+                        <span class="status-online"><span class="dot-green"></span> System Authority</span>
+                    </div>
+                    <div class="officer-profile-row">
+                        <div class="officer-avatar-box icon-gold-bg">
+                            <i class="ph-fill ph-crown"></i>
+                        </div>
+                        <div class="officer-identity">
+                            <h5>V. S. Kulkarni, IPS</h5>
+                            <span class="badge-num font-mono">MHA-IPS-001</span>
+                            <span class="officer-dept">Central Command HQ</span>
+                        </div>
+                    </div>
+                    <div class="credential-meta-list">
+                        <div class="meta-row">
+                            <span class="m-k">Responsibility:</span>
+                            <span class="m-v">System-wide administration</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="m-k">Token Binding:</span>
+                            <span class="m-v font-mono text-teal">FIDO2 Hardware Key</span>
+                        </div>
+                    </div>
+                    <div class="card-action-footer">
+                        <button class="btn-card-action btn-inspect-key"><i class="ph ph-fingerprint"></i> Inspect Token</button>
+                        <button class="btn-card-action btn-audit-officer"><i class="ph ph-shield-check"></i> Audit Logs</button>
+                    </div>
+                </div>
+
+                <div class="officer-credential-card" 
+                     data-role="dept_admin"
+                     data-name="DySP R. D. Deshmukh"
+                     data-id="MH-BHD-109"
+                     data-dept="Cyber & Financial Crime Range"
+                     data-token="Nitrokey Pro Security Key"
+                     data-fp="SHA-256: 7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730">
+                    <div class="card-header-line">
+                        <span class="role-badge badge-dept-admin">DEPARTMENT ADMIN</span>
+                        <span class="status-online"><span class="dot-green"></span> Range Active</span>
+                    </div>
+                    <div class="officer-profile-row">
+                        <div class="officer-avatar-box icon-red-bg">
+                            <i class="ph-fill ph-buildings"></i>
+                        </div>
+                        <div class="officer-identity">
+                            <h5>DySP R. D. Deshmukh</h5>
+                            <span class="badge-num font-mono">MH-BHD-109</span>
+                            <span class="officer-dept">Cyber Crime Range</span>
+                        </div>
+                    </div>
+                    <div class="credential-meta-list">
+                        <div class="meta-row">
+                            <span class="m-k">Responsibility:</span>
+                            <span class="m-v">Manage users/documents in dept</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="m-k">Token Binding:</span>
+                            <span class="m-v font-mono text-teal">Nitrokey HSM</span>
+                        </div>
+                    </div>
+                    <div class="card-action-footer">
+                        <button class="btn-card-action btn-inspect-key"><i class="ph ph-fingerprint"></i> Inspect Token</button>
+                        <button class="btn-card-action btn-audit-officer"><i class="ph ph-shield-check"></i> Audit Logs</button>
+                    </div>
+                </div>
+
+                <div class="officer-credential-card" 
+                     data-role="investigation_officer"
+                     data-name="Insp. Rahul Sharma"
+                     data-id="MH-CID-8812"
+                     data-dept="Cyber Investigation Division"
+                     data-token="Feitian BioPass FIDO2"
+                     data-fp="SHA-256: 4f8a92b3c1048e91827419baedbc58129a01f8d9b2341256789abcdef0123456">
+                    <div class="card-header-line">
+                        <span class="role-badge badge-io">INVESTIGATION OFFICER</span>
+                        <span class="status-online"><span class="dot-green"></span> On Duty</span>
+                    </div>
+                    <div class="officer-profile-row">
+                        <div class="officer-avatar-box icon-blue-bg">
+                            <i class="ph-fill ph-magnifying-glass"></i>
+                        </div>
+                        <div class="officer-identity">
+                            <h5>Insp. Rahul Sharma</h5>
+                            <span class="badge-num font-mono">MH-CID-8812</span>
+                            <span class="officer-dept">Cyber Cell PS, Bhandara</span>
+                        </div>
+                    </div>
+                    <div class="credential-meta-list">
+                        <div class="meta-row">
+                            <span class="m-k">Responsibility:</span>
+                            <span class="m-v">Handle investigation & case files</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="m-k">Token Binding:</span>
+                            <span class="m-v font-mono text-teal">BioPass FIDO2</span>
+                        </div>
+                    </div>
+                    <div class="card-action-footer">
+                        <button class="btn-card-action btn-inspect-key"><i class="ph ph-fingerprint"></i> Inspect Token</button>
+                        <button class="btn-card-action btn-audit-officer"><i class="ph ph-shield-check"></i> Audit Logs</button>
+                    </div>
+                </div>
+
+                <div class="officer-credential-card" 
+                     data-role="case_officer"
+                     data-name="Sub-Insp. Amit Verma"
+                     data-id="MH-PSI-4401"
+                     data-dept="Special Investigation Team"
+                     data-token="YubiKey Security Key"
+                     data-fp="SHA-256: b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9">
+                    <div class="card-header-line">
+                        <span class="role-badge badge-case-officer">CASE OFFICER</span>
+                        <span class="status-online"><span class="dot-green"></span> Case Assigned</span>
+                    </div>
+                    <div class="officer-profile-row">
+                        <div class="officer-avatar-box icon-cyan-bg">
+                            <i class="ph-fill ph-folder-user"></i>
+                        </div>
+                        <div class="officer-identity">
+                            <h5>Sub-Insp. Amit Verma</h5>
+                            <span class="badge-num font-mono">MH-PSI-4401</span>
+                            <span class="officer-dept">Sakoli Police Station</span>
+                        </div>
+                    </div>
+                    <div class="credential-meta-list">
+                        <div class="meta-row">
+                            <span class="m-k">Responsibility:</span>
+                            <span class="m-v">Manage assigned case workflow</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="m-k">Token Binding:</span>
+                            <span class="m-v font-mono text-teal">Hardware Token</span>
+                        </div>
+                    </div>
+                    <div class="card-action-footer">
+                        <button class="btn-card-action btn-inspect-key"><i class="ph ph-fingerprint"></i> Inspect Token</button>
+                        <button class="btn-card-action btn-audit-officer"><i class="ph ph-shield-check"></i> Audit Logs</button>
+                    </div>
+                </div>
+
+                <div class="officer-credential-card" 
+                     data-role="legal_officer"
+                     data-name="Adv. Anand S. Joshi"
+                     data-id="BAR-MHA-661"
+                     data-dept="Judicial Prosecution Cell"
+                     data-token="Bar Digital Certificate"
+                     data-fp="SHA-256: 38adf81023c914e0821b9aedfc091244e8912c9182a47b19a0e142b9c0192841">
+                    <div class="card-header-line">
+                        <span class="role-badge badge-legal">LEGAL OFFICER</span>
+                        <span class="status-online"><span class="dot-green"></span> Court Session</span>
+                    </div>
+                    <div class="officer-profile-row">
+                        <div class="officer-avatar-box icon-purple-bg">
+                            <i class="ph-fill ph-scales"></i>
+                        </div>
+                        <div class="officer-identity">
+                            <h5>Adv. Anand S. Joshi</h5>
+                            <span class="badge-num font-mono">BAR-MHA-661</span>
+                            <span class="officer-dept">District Court Enclave</span>
+                        </div>
+                    </div>
+                    <div class="credential-meta-list">
+                        <div class="meta-row">
+                            <span class="m-k">Responsibility:</span>
+                            <span class="m-v">Court filings & legal dockets</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="m-k">Token Binding:</span>
+                            <span class="m-v font-mono text-teal">Bar Digital Cert</span>
+                        </div>
+                    </div>
+                    <div class="card-action-footer">
+                        <button class="btn-card-action btn-inspect-key"><i class="ph ph-fingerprint"></i> Inspect Token</button>
+                        <button class="btn-card-action btn-audit-officer"><i class="ph ph-shield-check"></i> Audit Logs</button>
+                    </div>
+                </div>
+
+                <div class="officer-credential-card" 
+                     data-role="forensic_officer"
+                     data-name="Dr. Sameer Deshmukh"
+                     data-id="DFSL-MUM-104"
+                     data-dept="Directorate of Forensic Science"
+                     data-token="Nitrokey HSM Cryptographic"
+                     data-fp="SHA-256: ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb">
+                    <div class="card-header-line">
+                        <span class="role-badge badge-forensic">FORENSIC OFFICER</span>
+                        <span class="status-online"><span class="dot-green"></span> Lab Terminal</span>
+                    </div>
+                    <div class="officer-profile-row">
+                        <div class="officer-avatar-box icon-teal-bg">
+                            <i class="ph-fill ph-fingerprint"></i>
+                        </div>
+                        <div class="officer-identity">
+                            <h5>Dr. Sameer Deshmukh</h5>
+                            <span class="badge-num font-mono">DFSL-MUM-104</span>
+                            <span class="officer-dept">DFSL Central Lab</span>
+                        </div>
+                    </div>
+                    <div class="credential-meta-list">
+                        <div class="meta-row">
+                            <span class="m-k">Responsibility:</span>
+                            <span class="m-v">Evidence metadata & integrity</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="m-k">Token Binding:</span>
+                            <span class="m-v font-mono text-teal">HSM Crypto Token</span>
+                        </div>
+                    </div>
+                    <div class="card-action-footer">
+                        <button class="btn-card-action btn-inspect-key"><i class="ph ph-fingerprint"></i> Inspect Token</button>
+                        <button class="btn-card-action btn-audit-officer"><i class="ph ph-shield-check"></i> Audit Logs</button>
+                    </div>
+                </div>
+
+                <div class="officer-credential-card" 
+                     data-role="reviewer"
+                     data-name="PI S. T. Shinde"
+                     data-id="MH-CID-770"
+                     data-dept="Quality & Judicial Scrutiny Cell"
+                     data-token="SafeNet eToken 5110"
+                     data-fp="SHA-256: a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e">
+                    <div class="card-header-line">
+                        <span class="role-badge badge-reviewer">REVIEWER / APPROVER</span>
+                        <span class="status-online"><span class="dot-green"></span> Scrutiny Desk</span>
+                    </div>
+                    <div class="officer-profile-row">
+                        <div class="officer-avatar-box icon-amber-bg">
+                            <i class="ph-fill ph-stamp"></i>
+                        </div>
+                        <div class="officer-identity">
+                            <h5>PI S. T. Shinde</h5>
+                            <span class="badge-num font-mono">MH-CID-770</span>
+                            <span class="officer-dept">SP Office Scrutiny Cell</span>
+                        </div>
+                    </div>
+                    <div class="credential-meta-list">
+                        <div class="meta-row">
+                            <span class="m-k">Responsibility:</span>
+                            <span class="m-v">Verify, approve/reject dockets</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="m-k">Token Binding:</span>
+                            <span class="m-v font-mono text-teal">SafeNet eToken</span>
+                        </div>
+                    </div>
+                    <div class="card-action-footer">
+                        <button class="btn-card-action btn-inspect-key"><i class="ph ph-fingerprint"></i> Inspect Token</button>
+                        <button class="btn-card-action btn-audit-officer"><i class="ph ph-shield-check"></i> Audit Logs</button>
+                    </div>
+                </div>
+
+                <div class="officer-credential-card" 
+                     data-role="auditor"
+                     data-name="N. K. Tembhare"
+                     data-id="AUD-NCRB-201"
+                     data-dept="Central Compliance & Security Audit"
+                     data-token="Hardware TOTP + FIDO2"
+                     data-fp="SHA-256: 8f3b29c17e44a091d8b9e12845c719a0e41f98bc10294bce9410941d8a9b1241">
+                    <div class="card-header-line">
+                        <span class="role-badge badge-auditor">AUDITOR</span>
+                        <span class="status-online"><span class="dot-green"></span> Audit Active</span>
+                    </div>
+                    <div class="officer-profile-row">
+                        <div class="officer-avatar-box icon-slate-bg">
+                            <i class="ph-fill ph-list-magnifying-glass"></i>
+                        </div>
+                        <div class="officer-identity">
+                            <h5>N. K. Tembhare</h5>
+                            <span class="badge-num font-mono">AUD-NCRB-201</span>
+                            <span class="officer-dept">NCRB Audit Cell</span>
+                        </div>
+                    </div>
+                    <div class="credential-meta-list">
+                        <div class="meta-row">
+                            <span class="m-k">Responsibility:</span>
+                            <span class="m-v">Monitor system activities (Read-Only)</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="m-k">Token Binding:</span>
+                            <span class="m-v font-mono text-teal">Read-Only Key</span>
+                        </div>
+                    </div>
+                    <div class="card-action-footer">
+                        <button class="btn-card-action btn-inspect-key"><i class="ph ph-fingerprint"></i> Inspect Token</button>
+                        <button class="btn-card-action btn-audit-officer"><i class="ph ph-shield-check"></i> Audit Logs</button>
+                    </div>
+                </div>
+
+                <div class="officer-credential-card" 
+                     data-role="viewer"
+                     data-name="Suresh W. Lanjewar"
+                     data-id="EXT-STK-904"
+                     data-dept="Authorized External Stakeholder"
+                     data-token="GovNet OTP Authenticator"
+                     data-fp="SHA-256: 12049104810294bce9410941d88a92b3c1048e91827419baedbc58129a01f8d9">
+                    <div class="card-header-line">
+                        <span class="role-badge badge-viewer">VIEWER</span>
+                        <span class="status-online"><span class="dot-green"></span> Stakeholder</span>
+                    </div>
+                    <div class="officer-profile-row">
+                        <div class="officer-avatar-box icon-zinc-bg">
+                            <i class="ph-fill ph-eye"></i>
+                        </div>
+                        <div class="officer-identity">
+                            <h5>Suresh W. Lanjewar</h5>
+                            <span class="badge-num font-mono">EXT-STK-904</span>
+                            <span class="officer-dept">External Stakeholder</span>
+                        </div>
+                    </div>
+                    <div class="credential-meta-list">
+                        <div class="meta-row">
+                            <span class="m-k">Responsibility:</span>
+                            <span class="m-v">View authorized cases only</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="m-k">Token Binding:</span>
+                            <span class="m-v font-mono text-teal">OTP Clearance</span>
+                        </div>
+                    </div>
+                    <div class="card-action-footer">
+                        <button class="btn-card-action btn-inspect-key"><i class="ph ph-fingerprint"></i> Inspect Token</button>
+                        <button class="btn-card-action btn-audit-officer"><i class="ph ph-shield-check"></i> Audit Logs</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="tokenInspectModal">
+    <div class="modal-dialog token-modal-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-fingerprint modal-icon-badge"></i>
+                <div>
+                    <h3 id="tokenModalOfficerName">Officer Name</h3>
+                    <p id="tokenModalBadgeNumber">Badge ID</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="tokenInspectModal"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="token-security-banner">
+                <i class="ph-fill ph-shield-check text-success"></i>
+                <div>
+                    <h5>Hardware Cryptographic Token Verified</h5>
+                    <p>ECDSA secp256k1 public signature bound to State Police Root CA.</p>
+                </div>
+            </div>
+
+            <div class="token-meta-fields">
+                <div class="t-field">
+                    <span class="tf-label">ASSIGNED STATUTORY ROLE</span>
+                    <span class="tf-val font-mono text-gold" id="tokenRoleVal">SUPER ADMIN</span>
+                </div>
+                <div class="t-field">
+                    <span class="tf-label">HARDWARE TOKEN SERIAL</span>
+                    <span class="tf-val font-mono" id="tokenModelVal">YubiKey 5C FIDO2</span>
+                </div>
+                <div class="t-field">
+                    <span class="tf-label">ASSIGNED DEPARTMENT</span>
+                    <span class="tf-val" id="tokenDeptVal">Central Command HQ</span>
+                </div>
+                <div class="t-field">
+                    <span class="tf-label">SECURITY STATUS</span>
+                    <span class="tf-val text-success">Active & Non-Revoked</span>
+                </div>
+            </div>
+
+            <div class="token-fingerprint-box">
+                <span class="tf-label">PUBLIC KEY CRYPTOGRAPHIC FINGERPRINT (SHA-256)</span>
+                <span class="tf-hash font-mono text-teal" id="tokenFingerprintVal">4f8a92b3c1048e91827419baedbc58129a01f8d9b2341256789abcdef0123456</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" data-close="tokenInspectModal">Close</button>
+            <button type="button" class="btn-revoke-key" id="btnRevokeTokenDirect">
+                <i class="ph ph-prohibit"></i> Revoke Role Delegation
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="provisionKeyModal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-key modal-icon-badge"></i>
+                <div>
+                    <h3>Assign Statutory Role & Key Binding</h3>
+                    <p>Bind statutory permissions and hardware token to personnel</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="provisionKeyModal"><i class="ph ph-x"></i></button>
+        </div>
+        <form id="provisionTokenForm">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Personnel Full Name *</label>
+                    <input type="text" placeholder="e.g. Sub-Insp. D. K. Joshi" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Badge / CID / Employee ID *</label>
+                        <input type="text" placeholder="e.g. MH-BHD-5510" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Statutory Role *</label>
+                        <select id="modalRoleSelect" required>
+                            <option value="super_admin">Super Admin</option>
+                            <option value="dept_admin">Department Admin</option>
+                            <option value="investigation_officer" selected>Investigation Officer</option>
+                            <option value="case_officer">Case Officer / Case Manager</option>
+                            <option value="legal_officer">Legal Officer</option>
+                            <option value="forensic_officer">Evidence/Forensic Officer</option>
+                            <option value="reviewer">Reviewer / Approver</option>
+                            <option value="auditor">Auditor</option>
+                            <option value="viewer">Viewer</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Assigned Department *</label>
+                    <input type="text" placeholder="e.g. Cyber Cell Police Station, Sakoli" required>
+                </div>
+                <div class="form-group">
+                    <label>FIDO2 Hardware Key ID / Public Key Fingerprint *</label>
+                    <input type="text" class="font-mono" placeholder="Tap hardware token to register ECDSA key..." required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-close="provisionKeyModal">Cancel</button>
+                <button type="submit" class="btn-primary-action" id="btnSaveCredential">
+                    <i class="ph ph-shield-check"></i> Bind Role & Issue Certificate
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/users.js' %}"></script>
+{% endblock %}

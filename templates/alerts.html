@@ -1,0 +1,397 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Forensic Incident & Statutory Alerts | NCRB-Drishti{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/alerts.css' %}">
+{% endblock %}
+
+{% block page_title %}Security Operations & Statutory Alerts Triage{% endblock %}
+{% block page_subtitle %}Real-Time Forensic Tamper Feeds • Section 193 BNSS Deadline Monitors & Cryptographic Anomaly Sentinel{% endblock %}
+
+{% block content %}
+<div class="alerts-soc-wrapper">
+    <section class="threat-posture-strip">
+        <div class="posture-indicator-card">
+            <div class="posture-top">
+                <span class="threat-dot pulse-warning"></span>
+                <span class="posture-label">CURRENT THREAT POSTURE</span>
+            </div>
+            <div class="posture-value">
+                <h3 class="text-amber">ELEVATED</h3>
+                <span class="posture-sub">Consensus Ledger Intact • 2 Cryptographic Tamper Events Contained</span>
+            </div>
+        </div>
+
+        <div class="posture-metric-card">
+            <div class="metric-icon-wrap icon-red">
+                <i class="ph-fill ph-warning-octagon"></i>
+            </div>
+            <div class="metric-details">
+                <span class="m-count font-mono" id="statTamperCount">2</span>
+                <span class="m-label">Active Tamper Incidents</span>
+            </div>
+        </div>
+
+        <div class="posture-metric-card">
+            <div class="metric-icon-wrap icon-amber">
+                <i class="ph-fill ph-hourglass-high"></i>
+            </div>
+            <div class="metric-details">
+                <span class="m-count font-mono" id="statBnssCount">3</span>
+                <span class="m-label">BNSS Statutory Deadlines (&lt;48h)</span>
+            </div>
+        </div>
+
+        <div class="posture-metric-card">
+            <div class="metric-icon-wrap icon-blue">
+                <i class="ph-fill ph-shield-warning"></i>
+            </div>
+            <div class="metric-details">
+                <span class="m-count font-mono">1</span>
+                <span class="m-label">Anomalous Access Events</span>
+            </div>
+        </div>
+
+        <div class="posture-metric-card">
+            <div class="metric-icon-wrap icon-teal">
+                <i class="ph-fill ph-lock-key"></i>
+            </div>
+            <div class="metric-details">
+                <span class="m-count font-mono">4</span>
+                <span class="m-label">Artifacts in Vault Quarantine</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="triage-controls-strip">
+        <div class="filter-chips-track">
+            <button class="triage-chip active" data-filter="all">All Alerts (6)</button>
+            <button class="triage-chip" data-filter="tamper">
+                <span class="chip-dot dot-red"></span>
+                <span>Hash Tamper (2)</span>
+            </button>
+            <button class="triage-chip" data-filter="bnss">
+                <span class="chip-dot dot-amber"></span>
+                <span>Statutory BNSS (2)</span>
+            </button>
+            <button class="triage-chip" data-filter="access">
+                <span class="chip-dot dot-blue"></span>
+                <span>Custody & Access (1)</span>
+            </button>
+            <button class="triage-chip" data-filter="node">
+                <span class="chip-dot dot-teal"></span>
+                <span>Node Telemetry (1)</span>
+            </button>
+        </div>
+
+        <div class="triage-search-wrap">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" id="alertSearchInput" placeholder="Filter incidents by code, docket number, artifact, or station...">
+        </div>
+    </div>
+
+    <section class="incident-feed-container" id="incidentFeedList">
+        <div class="incident-card critical" data-type="tamper" data-code="ALT-CRIT-9901" data-docket="CR-2026-MH01" data-file="CCTV_ServerRoom_Access.mp4" data-station="Cyber Cell PS, Bhandara" data-time="06 Sep 2026, 21:40 IST" data-details="Bitstream verification failed against TiDB Consensus Node 02. The stored SHA-256 does not match block anchor #89109. Automated quarantine triggered.">
+            <div class="incident-card-top">
+                <div class="code-badge-group">
+                    <span class="severity-pill pill-critical"><i class="ph-fill ph-warning-circle"></i> CRITICAL SEVERITY</span>
+                    <span class="incident-code font-mono">ALT-CRIT-9901</span>
+                    <span class="incident-category font-mono">CRYPTOGRAPHIC INTEGRITY MISMATCH</span>
+                </div>
+                <span class="incident-timestamp font-mono"><i class="ph ph-clock"></i> 06 Sep 2026, 21:40 IST</span>
+            </div>
+
+            <div class="incident-body">
+                <div class="incident-icon-box box-critical">
+                    <i class="ph-fill ph-file-x"></i>
+                </div>
+                <div class="incident-summary">
+                    <div class="summary-head">
+                        <h4>Evidence Digest Desynchronization on Locked Video Stream</h4>
+                        <span class="docket-tag font-mono">DOCKET: CR-2026-MH01</span>
+                    </div>
+                    <p class="incident-narrative">Bitstream verification failed against TiDB Consensus Node 02. The stored SHA-256 does not match anchor block #89109. Automatic lockdown protocol initiated under Section 63 BSA, 2023.</p>
+                    <div class="incident-metadata-strip">
+                        <span><strong>Artifact:</strong> <code class="font-mono text-teal">CCTV_ServerRoom_Access.mp4</code></span>
+                        <span>•</span>
+                        <span><strong>Originating Unit:</strong> Cyber PS, Dist. Bhandara</span>
+                        <span>•</span>
+                        <span><strong>Assigned IO:</strong> Insp. Rahul Sharma (CID-8812)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="incident-card-foot">
+                <div class="status-indicator">
+                    <span class="badge-quarantine"><i class="ph-fill ph-lock-simple"></i> Vault Quarantined</span>
+                </div>
+                <div class="action-buttons-group">
+                    <button type="button" class="btn-incident-action btn-inspect-docket"><i class="ph ph-file-text"></i> Inspect Technical Vector</button>
+                    <button type="button" class="btn-incident-action btn-ack-sign"><i class="ph-fill ph-fingerprint"></i> Biometric Acknowledge</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="incident-card critical" data-type="tamper" data-code="ALT-CRIT-9902" data-docket="CR-2026-MH03" data-file="BankStatement_Seized_Ledger.pdf" data-station="Sakoli Police Station" data-time="06 Sep 2026, 18:15 IST" data-details="Unauthorized modification detected on static judicial PDF payload. Hash mismatch discovered during routine zero-knowledge consensus re-indexing across DFSL forensic nodes.">
+            <div class="incident-card-top">
+                <div class="code-badge-group">
+                    <span class="severity-pill pill-critical"><i class="ph-fill ph-warning-circle"></i> CRITICAL SEVERITY</span>
+                    <span class="incident-code font-mono">ALT-CRIT-9902</span>
+                    <span class="incident-category font-mono">BLOCKCHAIN MERKLE ROOT FAILURE</span>
+                </div>
+                <span class="incident-timestamp font-mono"><i class="ph ph-clock"></i> 06 Sep 2026, 18:15 IST</span>
+            </div>
+
+            <div class="incident-body">
+                <div class="incident-icon-box box-critical">
+                    <i class="ph-fill ph-shield-slash"></i>
+                </div>
+                <div class="incident-summary">
+                    <div class="summary-head">
+                        <h4>Merkle Proof Verification Rejected by Judicial Enclave</h4>
+                        <span class="docket-tag font-mono">DOCKET: CR-2026-MH03</span>
+                    </div>
+                    <p class="incident-narrative">Unauthorized byte offset divergence discovered on static bank transaction extract during routine zero-knowledge consensus re-indexing across DFSL forensic nodes.</p>
+                    <div class="incident-metadata-strip">
+                        <span><strong>Artifact:</strong> <code class="font-mono text-teal">BankStatement_Seized_Ledger.pdf</code></span>
+                        <span>•</span>
+                        <span><strong>Originating Unit:</strong> Sakoli Police Station</span>
+                        <span>•</span>
+                        <span><strong>Assigned IO:</strong> Insp. Amit Verma (BHD-4401)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="incident-card-foot">
+                <div class="status-indicator">
+                    <span class="badge-quarantine"><i class="ph-fill ph-lock-simple"></i> Vault Quarantined</span>
+                </div>
+                <div class="action-buttons-group">
+                    <button type="button" class="btn-incident-action btn-inspect-docket"><i class="ph ph-file-text"></i> Inspect Technical Vector</button>
+                    <button type="button" class="btn-incident-action btn-ack-sign"><i class="ph-fill ph-fingerprint"></i> Biometric Acknowledge</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="incident-card high" data-type="bnss" data-code="ALT-BNSS-0104" data-docket="CR-2026-MH02" data-file="ChargeSheet_Draft_v1.pdf" data-station="Mohadi Police Station" data-time="06 Sep 2026, 12:00 IST" data-details="Statutory 60-day investigation timeline under Section 193 BNSS, 2023 is terminating in 38 hours. Case diary endorsement and final chargesheet submission must be approved before remand expiration.">
+            <div class="incident-card-top">
+                <div class="code-badge-group">
+                    <span class="severity-pill pill-high"><i class="ph-fill ph-clock-countdown"></i> STATUTORY DEADLINE</span>
+                    <span class="incident-code font-mono">ALT-BNSS-0104</span>
+                    <span class="incident-category font-mono">SECTION 193 BNSS (60-DAY LIMIT)</span>
+                </div>
+                <span class="incident-timestamp font-mono text-amber"><i class="ph ph-hourglass-simple-high"></i> Expires in 38 Hours</span>
+            </div>
+
+            <div class="incident-body">
+                <div class="incident-icon-box box-amber">
+                    <i class="ph-fill ph-scales"></i>
+                </div>
+                <div class="incident-summary">
+                    <div class="summary-head">
+                        <h4>Section 193 BNSS Statutory Final Report Submission Terminating</h4>
+                        <span class="docket-tag font-mono">DOCKET: CR-2026-MH02</span>
+                    </div>
+                    <p class="incident-narrative">Statutory remand window expiring. Failure to deposit chargesheet and digital forensic certificates with the Sessions Court Registrar will result in statutory default bail entitlement under BNSS 187(3).</p>
+                    <div class="incident-metadata-strip">
+                        <span><strong>Accused:</strong> Vikas S. Rahangdale</span>
+                        <span>•</span>
+                        <span><strong>Originating Unit:</strong> Mohadi Police Station</span>
+                        <span>•</span>
+                        <span><strong>Jurisdiction:</strong> Sessions Court, Bhandara</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="incident-card-foot">
+                <div class="status-indicator">
+                    <span class="badge-urgent font-mono"><i class="ph-fill ph-bell-ringing"></i> SP Escalation Active</span>
+                </div>
+                <div class="action-buttons-group">
+                    <button type="button" class="btn-incident-action btn-inspect-docket"><i class="ph ph-folder-open"></i> Open Case Dossier</button>
+                    <button type="button" class="btn-incident-action btn-ack-sign"><i class="ph-fill ph-check-circle"></i> Acknowledge Notice</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="incident-card high" data-type="bnss" data-code="ALT-BNSS-0105" data-docket="CR-2026-MH06" data-file="FIR_MH26_0140.pdf" data-station="Cyber PS, Dist. Bhandara" data-time="06 Sep 2026, 09:30 IST" data-details="Preliminary investigation report under Section 173 BNSS pending SHO digital seal beyond 24 hours. Automatic statutory reminder triggered.">
+            <div class="incident-card-top">
+                <div class="code-badge-group">
+                    <span class="severity-pill pill-high"><i class="ph-fill ph-clock-countdown"></i> STATUTORY DEADLINE</span>
+                    <span class="incident-code font-mono">ALT-BNSS-0105</span>
+                    <span class="incident-category font-mono">SECTION 173 BNSS PRELIMINARY SEAL</span>
+                </div>
+                <span class="incident-timestamp font-mono text-amber"><i class="ph ph-hourglass-simple-high"></i> Expires in 14 Hours</span>
+            </div>
+
+            <div class="incident-body">
+                <div class="incident-icon-box box-amber">
+                    <i class="ph-fill ph-stamp"></i>
+                </div>
+                <div class="incident-summary">
+                    <div class="summary-head">
+                        <h4>Station House Officer (SHO) Digital Signature Seal Pending</h4>
+                        <span class="docket-tag font-mono">DOCKET: CR-2026-MH06</span>
+                    </div>
+                    <p class="incident-narrative">First Information Report ingested into repository remains pending digital endorsement by Station House Officer. Statutory forward dispatch to jurisdictional magistrate held.</p>
+                    <div class="incident-metadata-strip">
+                        <span><strong>Offense:</strong> Cyber Financial Breach</span>
+                        <span>•</span>
+                        <span><strong>Originating Unit:</strong> Cyber PS, Dist. Bhandara</span>
+                        <span>•</span>
+                        <span><strong>Pending Signer:</strong> PI R. Sharma</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="incident-card-foot">
+                <div class="status-indicator">
+                    <span class="badge-urgent font-mono"><i class="ph-fill ph-bell-ringing"></i> SHO Seal Required</span>
+                </div>
+                <div class="action-buttons-group">
+                    <button type="button" class="btn-incident-action btn-inspect-docket"><i class="ph ph-folder-open"></i> Open Case Dossier</button>
+                    <button type="button" class="btn-incident-action btn-ack-sign"><i class="ph-fill ph-check-circle"></i> Acknowledge Notice</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="incident-card medium" data-type="access" data-code="ALT-CUST-4409" data-docket="CR-2026-MH01" data-file="Forensic_MemoryDump_Analysis.raw" data-station="Terminal 04 (Sakoli PS)" data-time="06 Sep 2026, 03:14 IST" data-details="Out-of-jurisdiction credential attempt. Officer terminal attempted to access Level 3 DFSL memory dump without active investigation warrant delegation. Access denied.">
+            <div class="incident-card-top">
+                <div class="code-badge-group">
+                    <span class="severity-pill pill-medium"><i class="ph-fill ph-shield-warning"></i> ACCESS ANOMALY</span>
+                    <span class="incident-code font-mono">ALT-CUST-4409</span>
+                    <span class="incident-category font-mono">OUT-OF-JURISDICTION REQUEST</span>
+                </div>
+                <span class="incident-timestamp font-mono"><i class="ph ph-clock"></i> 06 Sep 2026, 03:14 IST</span>
+            </div>
+
+            <div class="incident-body">
+                <div class="incident-icon-box box-blue">
+                    <i class="ph-fill ph-user-circle-gear"></i>
+                </div>
+                <div class="incident-summary">
+                    <div class="summary-head">
+                        <h4>Unauthorized Cross-Enclave Bitstream Access Prevented</h4>
+                        <span class="docket-tag font-mono">DOCKET: CR-2026-MH01</span>
+                    </div>
+                    <p class="incident-narrative">Terminal 04 attempted to pull raw memory dump artifact without cross-jurisdiction delegation token. Request was quarantined by RBAC gateway and logged to immutable audit ledger.</p>
+                    <div class="incident-metadata-strip">
+                        <span><strong>Terminal:</strong> 10.14.8.44 (Sakoli PS)</span>
+                        <span>•</span>
+                        <span><strong>Target:</strong> MemoryDump_Analysis.raw</span>
+                        <span>•</span>
+                        <span><strong>Disposition:</strong> Blocked (HTTP 403)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="incident-card-foot">
+                <div class="status-indicator">
+                    <span class="badge-neutral font-mono"><i class="ph-fill ph-shield-check"></i> Gateway Blocked</span>
+                </div>
+                <div class="action-buttons-group">
+                    <button type="button" class="btn-incident-action btn-inspect-docket"><i class="ph ph-list-magnifying-glass"></i> Inspect Access Log</button>
+                    <button type="button" class="btn-incident-action btn-ack-sign"><i class="ph-fill ph-check-circle"></i> Dismiss Alert</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="incident-card info" data-type="node" data-code="ALT-NODE-8801" data-docket="GOVNET-CONSENSUS" data-file="Nagpur_Judicial_Node_02" data-station="Nagpur High Court Enclave" data-time="06 Sep 2026, 01:20 IST" data-details="Judicial Node 02 reported latency spike of 240ms during Byzantine consensus synchronization. Automatic Raft quorum maintained across remaining 2 nodes. Synchronized.">
+            <div class="incident-card-top">
+                <div class="code-badge-group">
+                    <span class="severity-pill pill-info"><i class="ph-fill ph-cpu"></i> NODE TELEMETRY</span>
+                    <span class="incident-code font-mono">ALT-NODE-8801</span>
+                    <span class="incident-category font-mono">CONSENSUS LATENCY SPIKE</span>
+                </div>
+                <span class="incident-timestamp font-mono"><i class="ph ph-clock"></i> 06 Sep 2026, 01:20 IST</span>
+            </div>
+
+            <div class="incident-body">
+                <div class="incident-icon-box box-teal">
+                    <i class="ph-fill ph-git-merge"></i>
+                </div>
+                <div class="incident-summary">
+                    <div class="summary-head">
+                        <h4>High Court Consensus Node 02 Sync Delay Cleared</h4>
+                        <span class="docket-tag font-mono">NODE: NAGPUR-REG-02</span>
+                    </div>
+                    <p class="incident-narrative">Network latency on GovNet dedicated judicial bridge spiked to 240ms. Byzantine consensus quorum was maintained by DFSL and NCRB central validator nodes. State synchronized.</p>
+                    <div class="incident-metadata-strip">
+                        <span><strong>Node:</strong> High Court Enclave</span>
+                        <span>•</span>
+                        <span><strong>State:</strong> Height #89,109 Synced</span>
+                        <span>•</span>
+                        <span><strong>Health:</strong> 18ms (Nominal)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="incident-card-foot">
+                <div class="status-indicator">
+                    <span class="badge-resolved font-mono"><i class="ph-fill ph-check"></i> Auto-Resolved</span>
+                </div>
+                <div class="action-buttons-group">
+                    <button type="button" class="btn-incident-action btn-inspect-docket"><i class="ph ph-activity"></i> View Node Telemetry</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="modal-backdrop" id="incidentModal">
+    <div class="modal-dialog incident-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-shield-warning modal-icon-badge text-danger"></i>
+                <div>
+                    <h3 id="modalIncidentHeading">Forensic Incident Report</h3>
+                    <p id="modalIncidentCode">Code: ALT-CRIT-9901</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="incidentModal"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-incident-meta-grid">
+                <div class="m-field">
+                    <span class="mf-label">AFFECTED DOCKET</span>
+                    <span class="mf-val font-mono text-gold" id="modalFieldDocket">CR-2026-MH01</span>
+                </div>
+                <div class="m-field">
+                    <span class="mf-label">INCIDENT TIMESTAMP</span>
+                    <span class="mf-val font-mono" id="modalFieldTime">06 Sep 2026, 21:40 IST</span>
+                </div>
+                <div class="m-field">
+                    <span class="mf-label">TARGET ARTIFACT</span>
+                    <span class="mf-val font-mono text-teal" id="modalFieldFile">CCTV_ServerRoom_Access.mp4</span>
+                </div>
+                <div class="m-field">
+                    <span class="mf-label">ORIGINATING JURISDICTION</span>
+                    <span class="mf-val" id="modalFieldStation">Cyber Cell PS, Bhandara</span>
+                </div>
+            </div>
+
+            <div class="modal-section-card">
+                <span class="section-card-title">TECHNICAL BREACH VECTOR</span>
+                <p class="section-card-text" id="modalFieldDetails">Bitstream verification failed against TiDB Consensus Node 02. The stored SHA-256 does not match anchor block #89109. Automated quarantine triggered.</p>
+            </div>
+
+            <div class="modal-section-card">
+                <span class="section-card-title">STATUTORY IMPLICATION UNDER SECTION 63 BSA, 2023</span>
+                <p class="section-card-text">The altered artifact has been quarantined. The system has automatically generated a cryptographic non-repudiation discrepancy docket. To protect courtroom admissibility, this item cannot be tendered into trial evidence until an authorized forensic re-audit is conducted by DFSL.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" data-close="incidentModal">Close</button>
+            <button type="button" class="btn-modal-quarantine" id="btnConfirmQuarantine">
+                <i class="ph-fill ph-lock-key"></i> Lock Quarantine State
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/alerts.js' %}"></script>
+{% endblock %}

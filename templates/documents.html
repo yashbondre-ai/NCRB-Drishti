@@ -1,0 +1,363 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Evidence Vault Workstation | NCRB-Drishti{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/documents.css' %}">
+{% endblock %}
+
+{% block page_title %}Digital Evidence Vault & Cryptographic Workstation{% endblock %}
+{% block page_subtitle %}Central Evidence Repository • Real-Time Integrity Inspection, Dual-Hash Auditing & Section 65B Admissibility{% endblock %}
+
+{% block content %}
+<div class="vault-workstation-container">
+    <div class="vault-top-strip">
+        <div class="strip-metric">
+            <span class="strip-label">Total Vaulted Artifacts</span>
+            <span class="strip-value">8,642 Files</span>
+        </div>
+        <div class="strip-divider"></div>
+        <div class="strip-metric">
+            <span class="strip-label">Cryptographic Integrity</span>
+            <span class="strip-value text-success"><i class="ph-fill ph-shield-check"></i> 99.95% Verified</span>
+        </div>
+        <div class="strip-divider"></div>
+        <div class="strip-metric">
+            <span class="strip-label">Quarantined / Tampered</span>
+            <span class="strip-value text-danger"><i class="ph-fill ph-warning-octagon"></i> 4 Flagged</span>
+        </div>
+        <div class="strip-divider"></div>
+        <div class="strip-metric">
+            <span class="strip-label">Distributed Vault Storage</span>
+            <span class="strip-value">245.6 GB / 512 GB</span>
+        </div>
+        <div class="strip-action">
+            <button class="btn-vault-ingest" id="btnOpenVaultDropzone">
+                <i class="ph-fill ph-cloud-arrow-up"></i>
+                <span>Ingest Evidence File</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="vault-split-workspace">
+        <aside class="vault-category-sidebar">
+            <div class="vault-sidebar-title">
+                <i class="ph-fill ph-folder-notch"></i>
+                <span>Evidence Categories</span>
+            </div>
+            <nav class="category-nav">
+                <button class="cat-link active" data-filter="all">
+                    <div class="cat-link-left">
+                        <i class="ph ph-squares-four"></i>
+                        <span>All Repositories</span>
+                    </div>
+                    <span class="cat-count">8,642</span>
+                </button>
+                <button class="cat-link" data-filter="pdf">
+                    <div class="cat-link-left">
+                        <i class="ph ph-file-text"></i>
+                        <span>FIR & Charge Sheets</span>
+                    </div>
+                    <span class="cat-count">4,180</span>
+                </button>
+                <button class="cat-link" data-filter="media">
+                    <div class="cat-link-left">
+                        <i class="ph ph-video-camera"></i>
+                        <span>CCTV Surveillance</span>
+                    </div>
+                    <span class="cat-count">1,037</span>
+                </button>
+                <button class="cat-link" data-filter="audio">
+                    <div class="cat-link-left">
+                        <i class="ph ph-speaker-high"></i>
+                        <span>Wiretaps & Audio</span>
+                    </div>
+                    <span class="cat-count">612</span>
+                </button>
+                <button class="cat-link" data-filter="forensic">
+                    <div class="cat-link-left">
+                        <i class="ph ph-cpu"></i>
+                        <span>Forensic Dumps (RAM/Disk)</span>
+                    </div>
+                    <span class="cat-count">2,809</span>
+                </button>
+                <button class="cat-link alert-link" data-filter="flagged">
+                    <div class="cat-link-left">
+                        <i class="ph ph-warning-octagon"></i>
+                        <span>Tamper Quarantined</span>
+                    </div>
+                    <span class="cat-count count-danger">4</span>
+                </button>
+            </nav>
+
+            <div class="vault-quick-audit-box">
+                <span class="audit-box-title">Consensus Verification</span>
+                <p>All hashes synced with TiDB cryptographic cluster node.</p>
+                <div class="node-sync-status">
+                    <span class="sync-dot"></span>
+                    <span>Node 01: Active Sync</span>
+                </div>
+            </div>
+        </aside>
+
+        <section class="vault-files-center">
+            <div class="files-control-bar">
+                <div class="vault-search-box">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" id="vaultSearchInput" placeholder="Filter by evidence filename, hash, or case register...">
+                </div>
+                <span class="vault-results-label" id="vaultFilesCount">5 Artifacts Selected</span>
+            </div>
+
+            <div class="vault-artifacts-list" id="vaultArtifactsList">
+                <div class="artifact-card active" 
+                     data-type="pdf" 
+                     data-status="verified"
+                     data-file="FIR_MH26_0124.pdf"
+                     data-case="CR-2026-MH01"
+                     data-size="1.4 MB"
+                     data-format="Adobe Portable Document (PDF)"
+                     data-date="02 Aug 2026 10:30 AM"
+                     data-officer="Insp. Rahul Sharma"
+                     data-block="#89104"
+                     data-hash="4f8a92b3c1048e91827419baedbc58129a01f8d9b2341256789abcdef0123456">
+                    <div class="card-icon-area">
+                        <span class="doc-badge badge-red">PDF</span>
+                    </div>
+                    <div class="card-info-area">
+                        <div class="card-title-line">
+                            <span class="card-filename">FIR_MH26_0124.pdf</span>
+                            <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Intact</span>
+                        </div>
+                        <div class="card-sub-line">
+                            <span class="font-mono text-gold">CR-2026-MH01</span>
+                            <span>•</span>
+                            <span>1.4 MB</span>
+                            <span>•</span>
+                            <span>Insp. Rahul Sharma</span>
+                        </div>
+                        <div class="card-hash-line">
+                            <span class="hash-tag">SHA-256</span>
+                            <span class="font-mono hash-text">4f8a92b3c1048e91827419ba...0123456</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="artifact-card" 
+                     data-type="media" 
+                     data-status="verified"
+                     data-file="CCTV_ServerRoom_Access.mp4"
+                     data-case="CR-2026-MH01"
+                     data-size="42.8 MB"
+                     data-format="MPEG-4 Video Stream"
+                     data-date="02 Aug 2026 02:15 PM"
+                     data-officer="Cyber Cell Bhandara"
+                     data-block="#89112"
+                     data-hash="b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9">
+                    <div class="card-icon-area">
+                        <span class="doc-badge badge-blue">MP4</span>
+                    </div>
+                    <div class="card-info-area">
+                        <div class="card-title-line">
+                            <span class="card-filename">CCTV_ServerRoom_Access.mp4</span>
+                            <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Intact</span>
+                        </div>
+                        <div class="card-sub-line">
+                            <span class="font-mono text-gold">CR-2026-MH01</span>
+                            <span>•</span>
+                            <span>42.8 MB</span>
+                            <span>•</span>
+                            <span>Cyber Cell Bhandara</span>
+                        </div>
+                        <div class="card-hash-line">
+                            <span class="hash-tag">SHA-256</span>
+                            <span class="font-mono hash-text">b94d27b9934d3e08a52e52d7...e2efcde9</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="artifact-card" 
+                     data-type="forensic" 
+                     data-status="verified"
+                     data-file="Forensic_MemoryDump_Analysis.raw"
+                     data-case="CR-2026-MH01"
+                     data-size="512.0 MB"
+                     data-format="Raw Volatile Memory Dump"
+                     data-date="03 Aug 2026 11:00 AM"
+                     data-officer="DFSL Digital Lab"
+                     data-block="#89145"
+                     data-hash="7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730">
+                    <div class="card-icon-area">
+                        <span class="doc-badge badge-teal">RAW</span>
+                    </div>
+                    <div class="card-info-area">
+                        <div class="card-title-line">
+                            <span class="card-filename">Forensic_MemoryDump_Analysis.raw</span>
+                            <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Intact</span>
+                        </div>
+                        <div class="card-sub-line">
+                            <span class="font-mono text-gold">CR-2026-MH01</span>
+                            <span>•</span>
+                            <span>512.0 MB</span>
+                            <span>•</span>
+                            <span>DFSL Digital Lab</span>
+                        </div>
+                        <div class="card-hash-line">
+                            <span class="hash-tag">SHA-256</span>
+                            <span class="font-mono hash-text">7d865e959b2466918c9863af...ded97730</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="artifact-card" 
+                     data-type="audio" 
+                     data-status="verified"
+                     data-file="Intercepted_Call_Log_09.wav"
+                     data-case="CR-2026-MH09"
+                     data-size="18.2 MB"
+                     data-format="Broadcast Wave Audio"
+                     data-date="10 Jun 2026 04:30 PM"
+                     data-officer="Neha Patil (Cyber Cell)"
+                     data-block="#88421"
+                     data-hash="ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb">
+                    <div class="card-icon-area">
+                        <span class="doc-badge badge-gold">WAV</span>
+                    </div>
+                    <div class="card-info-area">
+                        <div class="card-title-line">
+                            <span class="card-filename">Intercepted_Call_Log_09.wav</span>
+                            <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Intact</span>
+                        </div>
+                        <div class="card-sub-line">
+                            <span class="font-mono text-gold">CR-2026-MH09</span>
+                            <span>•</span>
+                            <span>18.2 MB</span>
+                            <span>•</span>
+                            <span>Neha Patil (Cyber Cell)</span>
+                        </div>
+                        <div class="card-hash-line">
+                            <span class="hash-tag">SHA-256</span>
+                            <span class="font-mono hash-text">ca978112ca1bbdcafac231b3...afee48bb</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="artifact-card" 
+                     data-type="pdf" 
+                     data-status="flagged"
+                     data-file="Tampered_BankStatement_Evidence.pdf"
+                     data-case="CR-2026-MH04"
+                     data-size="3.1 MB"
+                     data-format="Adobe Portable Document (PDF)"
+                     data-date="19 Jul 2026 09:45 AM"
+                     data-officer="Insp. Amit Verma"
+                     data-block="#88902"
+                     data-hash="a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e">
+                    <div class="card-icon-area">
+                        <span class="doc-badge badge-red">PDF</span>
+                    </div>
+                    <div class="card-info-area">
+                        <div class="card-title-line">
+                            <span class="card-filename">Tampered_BankStatement_Evidence.pdf</span>
+                            <span class="status-tag status-flagged"><i class="ph-fill ph-warning-octagon"></i> Tampered</span>
+                        </div>
+                        <div class="card-sub-line">
+                            <span class="font-mono text-gold">CR-2026-MH04</span>
+                            <span>•</span>
+                            <span>3.1 MB</span>
+                            <span>•</span>
+                            <span>Insp. Amit Verma</span>
+                        </div>
+                        <div class="card-hash-line">
+                            <span class="hash-tag hash-tag-danger">CORRUPT</span>
+                            <span class="font-mono hash-text text-danger">a591a6d40bf420404a011733...ad9f146e</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="vault-inspector-panel">
+            <div class="inspector-header">
+                <div class="inspector-title-line">
+                    <i class="ph-fill ph-fingerprint text-teal"></i>
+                    <span>Live Forensic Inspector</span>
+                </div>
+                <span class="inspector-badge" id="inspectorFormatBadge">PDF</span>
+            </div>
+
+            <div class="inspector-scroll-content">
+                <div class="inspector-preview-box">
+                    <div class="preview-placeholder">
+                        <i class="ph ph-file-lock" id="previewIcon"></i>
+                        <span class="preview-filename" id="inspectorFileName">FIR_MH26_0124.pdf</span>
+                        <span class="preview-mime" id="inspectorMime">Adobe Portable Document (PDF)</span>
+                    </div>
+                </div>
+
+                <div class="inspector-status-banner intact" id="inspectorBanner">
+                    <i class="ph-fill ph-shield-check" id="inspectorBannerIcon"></i>
+                    <div>
+                        <h5 id="inspectorBannerTitle">Cryptographic Integrity Match</h5>
+                        <p id="inspectorBannerDesc">Bit-level verification matches TiDB distributed ledger.</p>
+                    </div>
+                </div>
+
+                <div class="inspector-details-table">
+                    <div class="detail-row">
+                        <span class="detail-name">Associated Case</span>
+                        <span class="detail-val font-mono text-gold" id="inspectorCaseId">CR-2026-MH01</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-name">Artifact Size</span>
+                        <span class="detail-val font-mono" id="inspectorSize">1.4 MB</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-name">Seizure Officer</span>
+                        <span class="detail-val" id="inspectorOfficer">Insp. Rahul Sharma</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-name">Vault Ingestion Date</span>
+                        <span class="detail-val font-mono" id="inspectorDate">02 Aug 2026 10:30 AM</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-name">TiDB Ledger Block</span>
+                        <span class="detail-val font-mono text-teal" id="inspectorBlock">#89104</span>
+                    </div>
+                </div>
+
+                <div class="inspector-hash-audit-box">
+                    <div class="hash-audit-header">
+                        <span>Dual-Hash Integrity Comparison</span>
+                        <button class="btn-copy-hash" id="btnCopyFullHash" title="Copy SHA-256 Digest"><i class="ph ph-copy"></i></button>
+                    </div>
+                    <div class="hash-compare-item">
+                        <span class="compare-label">1. Seizure Checksum (Pre-Vault):</span>
+                        <div class="compare-box font-mono" id="inspectorSeizureHash">4f8a92b3c1048e91827419baedbc58129a01f8d9b2341256789abcdef0123456</div>
+                    </div>
+                    <div class="hash-compare-item">
+                        <span class="compare-label">2. TiDB Vault Master Checksum:</span>
+                        <div class="compare-box font-mono" id="inspectorVaultHash">4f8a92b3c1048e91827419baedbc58129a01f8d9b2341256789abcdef0123456</div>
+                    </div>
+                </div>
+
+                <div class="inspector-actions-cluster">
+                    <button class="btn-inspector-action btn-issue-cert" id="btnExportCertDirect">
+                        <i class="ph-fill ph-certificate"></i>
+                        <span>Section 65B Certificate</span>
+                    </button>
+                    <button class="btn-inspector-action btn-download-audit">
+                        <i class="ph ph-download-simple"></i>
+                        <span>Download Audit Packet</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/documents.js' %}"></script>
+{% endblock %}
