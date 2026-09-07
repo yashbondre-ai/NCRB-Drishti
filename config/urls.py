@@ -23,6 +23,7 @@ urlpatterns = [
     path('login/', TemplateView.as_view(template_name='login.html'), name='login'),
     path('register/', TemplateView.as_view(template_name='registration.html'), name='register'),
     path('registration/', TemplateView.as_view(template_name='registration.html'), name='registration'),
+    path('settings/', TemplateView.as_view(template_name='settings.html'), name='settings'),
 ]
 
 if settings.DEBUG:
