@@ -92,6 +92,10 @@ class UserManager(BaseUserManager):
 
         email = self.normalize_email(email)
 
+        is_active = extra_fields.pop("is_active", None)
+        if is_active is not None and "status" not in extra_fields:
+            extra_fields["status"] = User.Status.ACTIVE if is_active else User.Status.DEACTIVATED
+
         user = self.model(
             email=email,
             **extra_fields
@@ -106,7 +110,9 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, password=None, **extra_fields):
 
-        extra_fields.setdefault("is_active", True)
+        is_active = extra_fields.pop("is_active", True)
+        extra_fields.setdefault("status", User.Status.ACTIVE if is_active else User.Status.DEACTIVATED)
+        extra_fields.setdefault("role", User.Role.ADMIN)
 
         return self.create_user(
             email=email,
@@ -226,12 +232,33 @@ class User(AbstractBaseUser):
         db_table = "users"
 
     @property
+    def is_active(self):
+        return self.status == self.Status.ACTIVE
+
+    @is_active.setter
+    def is_active(self, value):
+        self.status = self.Status.ACTIVE if value else self.Status.DEACTIVATED
+
+    @property
     def is_staff(self):
+        if self.role == self.Role.ADMIN:
+            return True
+        if hasattr(self, "user_roles"):
+            return self.user_roles.filter(
+                role__code="SUPER_ADMIN",
+                role__is_active=True
+            ).exists()
         return False
 
     @property
     def is_superuser(self):
-        return False
+        return self.is_staff
+
+    def has_perm(self, perm, obj=None):
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        return self.is_superuser
 
     def __str__(self):
         return self.email
@@ -300,6 +327,58 @@ class UserRole(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.role.name}"
+
+
+class RoleRequest(models.Model):
+
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "Pending"
+        APPROVED = "APPROVED", "Approved"
+        REJECTED = "REJECTED", "Rejected"
+
+    id = models.BigAutoField(primary_key=True)
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="role_requests",
+        db_column="user_id",
+    )
+
+    requested_role = models.ForeignKey(
+        Role,
+        on_delete=models.RESTRICT,
+        related_name="role_requests",
+        db_column="requested_role_id",
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+    requested_at = models.DateTimeField(default=timezone.now)
+
+    reviewed_by = models.ForeignKey(
+        User,
+        on_delete=models.RESTRICT,
+        null=True,
+        blank=True,
+        related_name="reviewed_role_requests",
+        db_column="reviewed_by_id",
+    )
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    remarks = models.TextField(blank=True)
+
+    class Meta:
+        db_table = "role_requests"
+        ordering = ["-requested_at"]
+        indexes = [
+            models.Index(fields=["status", "requested_at"]),
+        ]
+
+    def __str__(self):
+        return f"{self.user.email} - {self.requested_role.code} ({self.status})"
     
 
 

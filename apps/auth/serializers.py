@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from django.db import transaction
 from rest_framework import serializers
-from django.contrib.auth import authenticate
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import Organization
+from .models import Organization, Role, RoleRequest
 
 
 User = get_user_model()
@@ -61,6 +61,8 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
 
+    requested_role = serializers.CharField(write_only=True, required=True)
+
     password = serializers.CharField(
         write_only=True,
         required=True,
@@ -85,6 +87,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             "phone",
             "password",
             "confirm_password",
+            "requested_role",
         ]
 
         extra_kwargs = {
@@ -162,6 +165,23 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         return value
 
+    def validate_requested_role(self, value):
+        value = value.strip().upper()
+
+        if not value:
+            raise serializers.ValidationError("Requested role is required.")
+        if value == Role.RoleCode.SUPER_ADMIN:
+            raise serializers.ValidationError(
+                "SUPER_ADMIN requires administrator approval or administrative creation."
+            )
+
+        role = Role.objects.filter(code=value, is_active=True).first()
+        if not role:
+            if Role.objects.filter(code=value).exists():
+                raise serializers.ValidationError("This role is currently inactive.")
+            raise serializers.ValidationError("Invalid requested role.")
+        return role
+
     def validate(self, attrs):
         password = attrs.get("password")
         confirm_password = attrs.get("confirm_password")
@@ -177,13 +197,71 @@ class RegisterSerializer(serializers.ModelSerializer):
         validated_data.pop("confirm_password")
 
         password = validated_data.pop("password")
+        requested_role = validated_data.pop("requested_role")
 
-        user = User.objects.create_user(
-            password=password,
-            **validated_data
-        )
+        with transaction.atomic():
+            user = User.objects.create_user(password=password, **validated_data)
+            RoleRequest.objects.create(user=user, requested_role=requested_role)
 
         return user
+
+
+class RoleRequestSerializer(serializers.ModelSerializer):
+    user = serializers.IntegerField(source="user_id", read_only=True)
+    user_name = serializers.CharField(source="user.full_name", read_only=True)
+    user_email = serializers.EmailField(source="user.email", read_only=True)
+    organization = serializers.CharField(source="user.organization.org_name", read_only=True)
+    requested_role = serializers.CharField(source="requested_role.code", read_only=True)
+    reviewed_by = serializers.IntegerField(source="reviewed_by_id", read_only=True)
+
+    class Meta:
+        model = RoleRequest
+        fields = [
+            "id", "user", "user_name", "user_email", "organization",
+            "requested_role", "status", "requested_at",
+            "reviewed_by", "reviewed_at", "remarks",
+        ]
+        read_only_fields = fields
+
+
+class RoleRequestRejectSerializer(serializers.Serializer):
+    remarks = serializers.CharField(required=False, allow_blank=True)
+
+
+class ActiveRoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ["code", "name"]
+
+
+class DashboardSerializer(serializers.ModelSerializer):
+    organization = serializers.CharField(source="organization.org_name", read_only=True)
+    assigned_roles = serializers.SerializerMethodField()
+    permissions = serializers.SerializerMethodField()
+    role_request = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ["id", "full_name", "email", "organization", "assigned_roles", "permissions", "role_request"]
+
+    def get_assigned_roles(self, user):
+        return list(user.user_roles.filter(role__is_active=True).values_list("role__code", flat=True))
+
+    def get_permissions(self, user):
+        return list(user.user_roles.filter(
+            role__is_active=True,
+            role__role_permissions__permission__is_active=True,
+        ).values_list("role__role_permissions__permission__code", flat=True).distinct())
+
+    def get_role_request(self, user):
+        request = user.role_requests.select_related("requested_role").first()
+        if not request:
+            return None
+        return {
+            "requested_role": request.requested_role.code,
+            "status": request.status,
+            "remarks": request.remarks,
+        }
     
     
     
