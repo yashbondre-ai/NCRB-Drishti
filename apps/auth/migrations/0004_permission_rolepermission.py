@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ncrb_auth', '0002_role_userrole'),
+        ('ncrb_auth', '0003_role_userrole'),
     ]
 
     operations = [

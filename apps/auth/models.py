@@ -106,7 +106,9 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, password=None, **extra_fields):
 
-        extra_fields.setdefault("is_active", True)
+        extra_fields.pop("is_active", None)
+        extra_fields.setdefault("status", self.model.Status.ACTIVE)
+        extra_fields.setdefault("role", self.model.Role.ADMIN)
 
         return self.create_user(
             email=email,
@@ -202,15 +204,15 @@ class User(AbstractBaseUser):
         default=timezone.now
     )
 
-    # Django authentication needs this property,
-    # but we don't want a last_login database column.
+    # AbstractBaseUser.last_login is not a DB column on this model.
+    # Map it onto last_login_at so Django auth signals do not crash.
     @property
     def last_login(self):
-        return None
+        return self.last_login_at
 
     @last_login.setter
     def last_login(self, value):
-        pass
+        self.last_login_at = value
 
     USERNAME_FIELD = "email"
 
@@ -226,12 +228,41 @@ class User(AbstractBaseUser):
         db_table = "users"
 
     @property
+    def is_active(self):
+        return self.status == self.Status.ACTIVE
+
+    @is_active.setter
+    def is_active(self, value):
+        if value:
+            self.status = self.Status.ACTIVE
+        elif self.status == self.Status.ACTIVE:
+            self.status = self.Status.DEACTIVATED
+
+    @property
     def is_staff(self):
-        return False
+        return self.role == self.Role.ADMIN
 
     @property
     def is_superuser(self):
-        return False
+        return self.role == self.Role.ADMIN
+
+    def get_username(self):
+        return self.email
+
+    def has_perm(self, perm, obj=None):
+        return self.is_staff
+
+    def has_module_perms(self, app_label):
+        return self.is_staff
+
+    def save(self, *args, **kwargs):
+        update_fields = kwargs.get("update_fields")
+        if update_fields and "last_login" in update_fields:
+            kwargs["update_fields"] = [
+                "last_login_at" if field == "last_login" else field
+                for field in update_fields
+            ]
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.email

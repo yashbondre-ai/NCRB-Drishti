@@ -1,7 +1,11 @@
+from django.utils import timezone
 from rest_framework import generics, status
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Organization, User
+
+from .models import Organization
+from .permissions import HasPermission
 from .serializers import (
     OrganizationSerializer,
     RegisterSerializer,
@@ -9,31 +13,21 @@ from .serializers import (
 )
 
 
-
-
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from .permissions import HasPermission
-
 class OrganizationListCreateView(generics.ListCreateAPIView):
     queryset = Organization.objects.all().order_by("id")
     serializer_class = OrganizationSerializer
-    permission_classes = [HasPermission]
+    permission_classes = [IsAuthenticated, HasPermission]
     required_permission = "ORG_VIEW"
+
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
 
     def create(self, request, *args, **kwargs):
-
-        serializer = self.get_serializer(
-            data=request.data
-        )
-
-        serializer.is_valid(
-            raise_exception=True
-        )
-
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
         return Response(
@@ -53,9 +47,12 @@ class RegisterView(generics.CreateAPIView):
             },
             status=status.HTTP_201_CREATED,
         )
-        
+
+
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
 
     def get(self, request, *args, **kwargs):
         return Response(
@@ -67,23 +64,19 @@ class LoginView(generics.GenericAPIView):
         )
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data={
-            "email": request.data.get("email"),
-            "password": request.data.get("password"),
-        })
-
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = User.objects.get(
-            email__iexact=request.data.get("email").strip()
-        )
+        user = serializer.validated_data["user"]
+        user.last_login_at = timezone.now()
+        user.save(update_fields=["last_login_at"])
 
         refresh = RefreshToken.for_user(user)
 
         return Response(
             {
                 "message": "Login successful.",
-                "user": serializer.validated_data["user"],
+                "user": serializer.validated_data["user_data"],
                 "tokens": {
                     "access": str(refresh.access_token),
                     "refresh": str(refresh),
@@ -91,6 +84,3 @@ class LoginView(generics.GenericAPIView):
             },
             status=status.HTTP_200_OK,
         )
-        
-        
-        

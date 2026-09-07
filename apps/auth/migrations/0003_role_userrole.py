@@ -9,7 +9,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ncrb_auth', '0001_initial'),
+        ('ncrb_auth', '0002_user_role'),
     ]
 
     operations = [
