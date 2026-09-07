@@ -1,0 +1,368 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Case Register | NCRB-Drishti{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cases.css' %}">
+{% endblock %}
+
+{% block page_title %}Criminal Case Management Ledger{% endblock %}
+{% block page_subtitle %}Master Judicial Repository • Track Investigation Lifecycle, Custody & Charge Sheets{% endblock %}
+
+{% block content %}
+<div class="cases-container">
+    <section class="cases-kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-blue">
+                <i class="ph-fill ph-folders"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Total Dockets</span>
+                <h3 class="kpi-value">1,248</h3>
+                <span class="kpi-trend trend-neutral">Registered Vaulted</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-amber">
+                <i class="ph-fill ph-magnifying-glass"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Active Investigation</span>
+                <h3 class="kpi-value">540</h3>
+                <span class="kpi-trend trend-warn">Pre-Charge Sheet</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-teal">
+                <i class="ph-fill ph-scales"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Charge Sheets Filed</span>
+                <h3 class="kpi-value">420</h3>
+                <span class="kpi-trend trend-teal">Committed to Court</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-success">
+                <i class="ph-fill ph-check-circle"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Judicially Disposed</span>
+                <h3 class="kpi-value">288</h3>
+                <span class="kpi-trend trend-up">Verdict Executed</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="cases-toolbar-panel">
+        <div class="toolbar-left">
+            <div class="search-filter-box">
+                <i class="ph ph-magnifying-glass"></i>
+                <input type="text" id="caseSearchInput" placeholder="Search case register ID, sections, accused, or IO...">
+            </div>
+            <div class="filter-chips-cluster">
+                <button class="case-chip active" data-filter="all">All Cases</button>
+                <button class="case-chip" data-filter="active">Active Investigation</button>
+                <button class="case-chip" data-filter="chargesheet">Charge Sheeted</button>
+                <button class="case-chip" data-filter="trial">In Court Trial</button>
+                <button class="case-chip" data-filter="disposed">Disposed</button>
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <button class="btn-primary-action" id="btnRegisterCase">
+                <i class="ph ph-plus-circle"></i>
+                <span>Register Case Docket</span>
+            </button>
+        </div>
+    </section>
+
+    <section class="panel-card cases-table-panel">
+        <div class="panel-header">
+            <div>
+                <h4>Central Case Investigation Register</h4>
+                <span class="panel-subtext">Statutory tracking compliant with Bharatiya Nyaya Sanhita (BNS) protocols</span>
+            </div>
+            <div class="table-meta-tag">
+                <span id="caseRecordCounter">Showing 5 of 5 Records</span>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="lex-table" id="casesMasterTable">
+                <thead>
+                    <tr>
+                        <th>Case Docket ID</th>
+                        <th>Case Title & Classification</th>
+                        <th>Statutory Sections</th>
+                        <th>Investigating Officer</th>
+                        <th>Filing Date</th>
+                        <th>Evidence Vaulted</th>
+                        <th>Lifecycle Stage</th>
+                        <th class="text-right">Dossier</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-status="active" 
+                        data-case="CR-2026-MH01" 
+                        data-title="State of Maharashtra vs. Sandeep K. Verma" 
+                        data-crime="Cyber Extortion & Corporate Espionage"
+                        data-sections="BNS Sec 308(2), IT Act 66D" 
+                        data-io="Insp. Rahul Sharma" 
+                        data-date="02 Aug 2026" 
+                        data-evidence="6 Secured Items" 
+                        data-stage="Forensic Audit"
+                        data-complainant="Axis Security Systems Ltd."
+                        data-accused="Sandeep K. Verma (Custody)"
+                        data-court="Chief Judicial Magistrate, Bhandara">
+                        <td class="font-mono case-id-cell">CR-2026-MH01</td>
+                        <td class="case-main-cell">
+                            <span class="case-title-text">State vs. Sandeep K. Verma</span>
+                            <span class="case-crime-label">Cyber Extortion & Espionage</span>
+                        </td>
+                        <td><span class="section-pill">BNS 308(2), IT 66D</span></td>
+                        <td>Insp. Rahul Sharma</td>
+                        <td>02 Aug 2026</td>
+                        <td><span class="evidence-badge"><i class="ph ph-file-lock"></i> 6 Items</span></td>
+                        <td><span class="stage-tag stage-investigation"><span class="pulse-dot-amber"></span> Under Investigation</span></td>
+                        <td class="text-right">
+                            <button class="btn-open-dossier" title="Open Case Dossier"><i class="ph ph-folder-open"></i> View Dossier</button>
+                        </td>
+                    </tr>
+                    <tr data-status="chargesheet" 
+                        data-case="CR-2026-MH04" 
+                        data-title="State of Maharashtra vs. Rakesh M. Gaikwad" 
+                        data-crime="Digital Forgery & Identity Deception"
+                        data-sections="BNS Sec 336(3), BNS Sec 318(4)" 
+                        data-io="Insp. Amit Verma" 
+                        data-date="18 Jul 2026" 
+                        data-evidence="12 Secured Items" 
+                        data-stage="Charge Sheet Filed"
+                        data-complainant="Bhandara Urban Cooperative Bank"
+                        data-accused="Rakesh M. Gaikwad (Bail)"
+                        data-court="Sessions Court, Bhandara">
+                        <td class="font-mono case-id-cell">CR-2026-MH04</td>
+                        <td class="case-main-cell">
+                            <span class="case-title-text">State vs. Rakesh M. Gaikwad</span>
+                            <span class="case-crime-label">Digital Forgery & Fraud</span>
+                        </td>
+                        <td><span class="section-pill">BNS 336(3), 318(4)</span></td>
+                        <td>Insp. Amit Verma</td>
+                        <td>18 Jul 2026</td>
+                        <td><span class="evidence-badge"><i class="ph ph-file-lock"></i> 12 Items</span></td>
+                        <td><span class="stage-tag stage-chargesheet"><i class="ph-fill ph-scales"></i> Charge Sheeted</span></td>
+                        <td class="text-right">
+                            <button class="btn-open-dossier" title="Open Case Dossier"><i class="ph ph-folder-open"></i> View Dossier</button>
+                        </td>
+                    </tr>
+                    <tr data-status="trial" 
+                        data-case="CR-2026-MH09" 
+                        data-title="State of Maharashtra vs. Nikhil R. Tembhare" 
+                        data-crime="Unauthorized Network Interception"
+                        data-sections="IT Act Sec 43, 66" 
+                        data-io="Neha Patil (Cyber Cell)" 
+                        data-date="10 Jun 2026" 
+                        data-evidence="18 Secured Items" 
+                        data-stage="Court Trial"
+                        data-complainant="Govt. Tech Infrastructure Cell"
+                        data-accused="Nikhil R. Tembhare (In Judicial Hold)"
+                        data-court="District & Sessions Court, Nagpur">
+                        <td class="font-mono case-id-cell">CR-2026-MH09</td>
+                        <td class="case-main-cell">
+                            <span class="case-title-text">State vs. Nikhil R. Tembhare</span>
+                            <span class="case-crime-label">Critical Infra Breach</span>
+                        </td>
+                        <td><span class="section-pill">IT Act 43, 66</span></td>
+                        <td>Neha Patil (Cyber Cell)</td>
+                        <td>10 Jun 2026</td>
+                        <td><span class="evidence-badge"><i class="ph ph-file-lock"></i> 18 Items</span></td>
+                        <td><span class="stage-tag stage-trial"><i class="ph-fill ph-gavel"></i> In Judicial Trial</span></td>
+                        <td class="text-right">
+                            <button class="btn-open-dossier" title="Open Case Dossier"><i class="ph ph-folder-open"></i> View Dossier</button>
+                        </td>
+                    </tr>
+                    <tr data-status="active" 
+                        data-case="CR-2026-MH14" 
+                        data-title="State of Maharashtra vs. Unknown Syndicate" 
+                        data-crime="Distributed Denial of Service & Ransomware"
+                        data-sections="BNS Sec 385, IT Act 66F" 
+                        data-io="Insp. Rahul Sharma" 
+                        data-date="01 Sep 2026" 
+                        data-evidence="4 Secured Items" 
+                        data-stage="Evidence Gathered"
+                        data-complainant="Regional Power Distribution Grid"
+                        data-accused="Unidentified IP Node Cluster"
+                        data-court="Special Cyber Court, Mumbai">
+                        <td class="font-mono case-id-cell">CR-2026-MH14</td>
+                        <td class="case-main-cell">
+                            <span class="case-title-text">State vs. Unknown Syndicate</span>
+                            <span class="case-crime-label">Cyber Terrorism / DDoS</span>
+                        </td>
+                        <td><span class="section-pill">BNS 385, IT 66F</span></td>
+                        <td>Insp. Rahul Sharma</td>
+                        <td>01 Sep 2026</td>
+                        <td><span class="evidence-badge"><i class="ph ph-file-lock"></i> 4 Items</span></td>
+                        <td><span class="stage-tag stage-investigation"><span class="pulse-dot-amber"></span> Under Investigation</span></td>
+                        <td class="text-right">
+                            <button class="btn-open-dossier" title="Open Case Dossier"><i class="ph ph-folder-open"></i> View Dossier</button>
+                        </td>
+                    </tr>
+                    <tr data-status="disposed" 
+                        data-case="CR-2025-MH88" 
+                        data-title="State of Maharashtra vs. Prakash J. Meshram" 
+                        data-crime="SIM Card Spoofing & Financial Fraud"
+                        data-sections="BNS Sec 319(2)" 
+                        data-io="Sub-Insp. D. K. Joshi" 
+                        data-date="14 Nov 2025" 
+                        data-evidence="9 Secured Items" 
+                        data-stage="Verdict Executed"
+                        data-complainant="Suresh W. Lanjewar"
+                        data-accused="Prakash J. Meshram (Convicted)"
+                        data-court="Fast Track Magistrate, Sakoli">
+                        <td class="font-mono case-id-cell">CR-2025-MH88</td>
+                        <td class="case-main-cell">
+                            <span class="case-title-text">State vs. Prakash J. Meshram</span>
+                            <span class="case-crime-label">Financial SIM Fraud</span>
+                        </td>
+                        <td><span class="section-pill">BNS 319(2)</span></td>
+                        <td>Sub-Insp. D. K. Joshi</td>
+                        <td>14 Nov 2025</td>
+                        <td><span class="evidence-badge"><i class="ph ph-file-lock"></i> 9 Items</span></td>
+                        <td><span class="stage-tag stage-disposed"><i class="ph-fill ph-check-circle"></i> Disposed / Convicted</span></td>
+                        <td class="text-right">
+                            <button class="btn-open-dossier" title="Open Case Dossier"><i class="ph ph-folder-open"></i> View Dossier</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<div class="modal-backdrop" id="caseDossierModal">
+    <div class="modal-dialog dossier-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-briefcase modal-icon-badge"></i>
+                <div>
+                    <h3 id="dossierCaseId">CR-2026-MH01</h3>
+                    <p id="dossierCaseTitle">State vs. Sandeep K. Verma</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="caseDossierModal"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="dossier-pipeline-card">
+                <span class="pipeline-heading">Statutory Case Progression Pipeline</span>
+                <div class="pipeline-track">
+                    <div class="track-node completed" id="nodeFir">
+                        <div class="node-circle"><i class="ph-fill ph-check"></i></div>
+                        <span class="node-label">FIR Logged</span>
+                    </div>
+                    <div class="track-line completed" id="line1"></div>
+                    <div class="track-node completed" id="nodeEvidence">
+                        <div class="node-circle"><i class="ph-fill ph-check"></i></div>
+                        <span class="node-label">Evidence Vaulted</span>
+                    </div>
+                    <div class="track-line completed" id="line2"></div>
+                    <div class="track-node active" id="nodeForensic">
+                        <div class="node-circle"><i class="ph ph-fingerprint"></i></div>
+                        <span class="node-label">Forensic Audit</span>
+                    </div>
+                    <div class="track-line" id="line3"></div>
+                    <div class="track-node" id="nodeChargeSheet">
+                        <div class="node-circle"><i class="ph ph-file-text"></i></div>
+                        <span class="node-label">Charge Sheet</span>
+                    </div>
+                    <div class="track-line" id="line4"></div>
+                    <div class="track-node" id="nodeTrial">
+                        <div class="node-circle"><i class="ph ph-gavel"></i></div>
+                        <span class="node-label">Judicial Verdict</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dossier-meta-grid">
+                <div class="meta-field-box">
+                    <span class="field-label">Complainant / Entity</span>
+                    <span class="field-value" id="dossierComplainant">Axis Security Systems Ltd.</span>
+                </div>
+                <div class="meta-field-box">
+                    <span class="field-label">Accused Party</span>
+                    <span class="field-value" id="dossierAccused">Sandeep K. Verma</span>
+                </div>
+                <div class="meta-field-box">
+                    <span class="field-label">Investigation Officer</span>
+                    <span class="field-value" id="dossierOfficer">Insp. Rahul Sharma</span>
+                </div>
+                <div class="meta-field-box">
+                    <span class="field-label">Competent Court</span>
+                    <span class="field-value" id="dossierCourt">CJM Court, Bhandara</span>
+                </div>
+                <div class="meta-field-box">
+                    <span class="field-label">Registered Sections</span>
+                    <span class="field-value font-mono" id="dossierSections">BNS Sec 308(2), IT Act 66D</span>
+                </div>
+                <div class="meta-field-box">
+                    <span class="field-label">Filing Date</span>
+                    <span class="field-value font-mono" id="dossierDate">02 Aug 2026</span>
+                </div>
+            </div>
+
+            <div class="dossier-evidence-section">
+                <div class="section-sub-header">
+                    <h5>Vaulted Digital Evidence Attached</h5>
+                    <span class="evidence-sub-count">3 Primary Records</span>
+                </div>
+                <div class="dossier-evidence-list">
+                    <div class="evidence-entry-row">
+                        <div class="entry-left">
+                            <span class="doc-badge badge-red">PDF</span>
+                            <div>
+                                <span class="entry-title">FIR_MH26_0124.pdf</span>
+                                <span class="entry-hash">SHA-256: 4f8a92b3c1048e91827419baedbc5812</span>
+                            </div>
+                        </div>
+                        <div class="entry-right">
+                            <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> BSA 65B Sealed</span>
+                        </div>
+                    </div>
+                    <div class="evidence-entry-row">
+                        <div class="entry-left">
+                            <span class="doc-badge badge-blue">MP4</span>
+                            <div>
+                                <span class="entry-title">CCTV_ServerRoom_Access.mp4</span>
+                                <span class="entry-hash">SHA-256: b94d27b9934d3e08a52e52d7da7dabfac</span>
+                            </div>
+                        </div>
+                        <div class="entry-right">
+                            <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Hash Matched</span>
+                        </div>
+                    </div>
+                    <div class="evidence-entry-row">
+                        <div class="entry-left">
+                            <span class="doc-badge badge-red">PDF</span>
+                            <div>
+                                <span class="entry-title">Forensic_MemoryDump_Analysis.pdf</span>
+                                <span class="entry-hash">SHA-256: 7d865e959b2466918c9863afca942d0f</span>
+                            </div>
+                        </div>
+                        <div class="entry-right">
+                            <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> BSA 65B Sealed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" data-close="caseDossierModal">Close Docket</button>
+            <button type="button" class="btn-primary-action" id="btnPrintDocket">
+                <i class="ph ph-printer"></i> Print Judicial Dossier
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/cases.js' %}"></script>
+{% endblock %}

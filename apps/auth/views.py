@@ -2,6 +2,7 @@ from django.db import transaction
 from django.shortcuts import render
 from django.utils import timezone
 from rest_framework import generics, status
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Organization, Role, RoleRequest, User, UserRole
@@ -29,7 +30,7 @@ def testing_page(request, page):
 class OrganizationListCreateView(generics.ListCreateAPIView):
     queryset = Organization.objects.all().order_by("id")
     serializer_class = OrganizationSerializer
-    permission_classes = [HasPermission]
+    permission_classes = [IsAuthenticated, HasPermission]
     required_permission = "ORG_VIEW"
 
 
@@ -54,17 +55,12 @@ class DashboardView(generics.RetrieveAPIView):
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
 
     def create(self, request, *args, **kwargs):
-
-        serializer = self.get_serializer(
-            data=request.data
-        )
-
-        serializer.is_valid(
-            raise_exception=True
-        )
-
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
         return Response(
@@ -87,9 +83,12 @@ class RegisterView(generics.CreateAPIView):
             },
             status=status.HTTP_201_CREATED,
         )
-        
+
+
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
 
     def get(self, request, *args, **kwargs):
         return Response(
@@ -113,7 +112,7 @@ class LoginView(generics.GenericAPIView):
         return Response(
             {
                 "message": "Login successful.",
-                "user": serializer.validated_data["user"],
+                "user": serializer.validated_data["user_data"],
                 "tokens": {
                     "access": str(refresh.access_token),
                     "refresh": str(refresh),

@@ -1,0 +1,350 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blockchain Evidence Verifier | NCRB-Drishti{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/blockchain.css' %}">
+{% endblock %}
+
+{% block page_title %}Decentralized Judicial Ledger & Proof of Existence{% endblock %}
+{% block page_subtitle %}Cryptographic Immutability Engine • Byzantine Fault Tolerant Consensus Across Police, FSL & Judicial Nodes{% endblock %}
+
+{% block content %}
+<div class="blockchain-wrapper">
+    <section class="onchain-verifier-hero">
+        <div class="hero-left-terminal">
+            <div class="terminal-badge-line">
+                <span class="live-dot-pulse"></span>
+                <span class="terminal-badge">LIVE ON-CHAIN CONSENSUS VALIDATOR</span>
+            </div>
+            <h3>Verify Cryptographic Proof of Existence</h3>
+            <p>Input a vaulted SHA-256 evidence digest to verify zero-knowledge timestamp integrity against the distributed state consensus ledger.</p>
+
+            <div class="quick-preset-hashes">
+                <span class="preset-label">Test Artifact Presets:</span>
+                <button type="button" class="preset-pill" data-preset="valid">
+                    <i class="ph-fill ph-check-circle text-teal"></i>
+                    <span>FIR_MH26_0124 (Sealed)</span>
+                </button>
+                <button type="button" class="preset-pill" data-preset="tampered">
+                    <i class="ph-fill ph-warning-octagon text-danger"></i>
+                    <span>BankStatement (Tampered)</span>
+                </button>
+            </div>
+
+            <div class="verifier-input-container">
+                <div class="hash-input-field">
+                    <i class="ph ph-fingerprint"></i>
+                    <input type="text" id="targetHashInput" placeholder="Enter 64-character SHA-256 evidence digest..." value="4f8a92b3c1048e91827419baedbc58129a01f8d9b2341256789abcdef0123456">
+                </div>
+                <button class="btn-execute-verify" id="btnExecuteVerify">
+                    <i class="ph-fill ph-shield-check"></i>
+                    <span>Verify On-Chain Integrity</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="hero-right-cert" id="verificationResultPanel">
+            <div class="cert-stamp-box valid" id="certStampBox">
+                <div class="stamp-icon-ring">
+                    <i class="ph-fill ph-seal-check" id="certIcon"></i>
+                </div>
+                <div class="stamp-content">
+                    <span class="cert-verdict" id="certVerdict">ON-CHAIN VERIFIED: UNTAMPERED</span>
+                    <span class="cert-subtext" id="certSubtext">Bit-level verification matches 3/3 Byzantine Consortium Nodes</span>
+                </div>
+            </div>
+
+            <div class="cert-breakdown-grid">
+                <div class="breakdown-item">
+                    <span class="b-key">Anchor Block</span>
+                    <span class="b-val font-mono text-gold" id="resBlock">Block #89104</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="b-key">Consensus Latency</span>
+                    <span class="b-val font-mono text-teal" id="resLatency">14.2 ms</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="b-key">Gas Incurred</span>
+                    <span class="b-val font-mono">0.00 (GovNet Private)</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="b-key">Merkle Tree Proof</span>
+                    <span class="b-val font-mono text-success" id="resMerkle">PASSED (Root #0x8f3b)</span>
+                </div>
+            </div>
+
+            <button class="btn-export-proof-cert" id="btnOpenCertModal">
+                <i class="ph ph-certificate"></i>
+                <span>Download Blockchain Verification Docket</span>
+            </button>
+        </div>
+    </section>
+
+    <section class="consensus-topology-strip">
+        <div class="topology-header">
+            <div class="top-title-wrap">
+                <i class="ph-fill ph-git-branch text-teal"></i>
+                <div>
+                    <h4>Judicial Consortium Node Topology</h4>
+                    <p>Decentralized state network validating non-repudiation ledgers under Section 63 BSA, 2023</p>
+                </div>
+            </div>
+            <span class="protocol-tag font-mono">Protocol: BFT-Raft • 3 Validator Nodes Active</span>
+        </div>
+
+        <div class="nodes-grid">
+            <div class="node-health-card">
+                <div class="node-card-top">
+                    <div class="node-title-group">
+                        <span class="pulse-indicator"></span>
+                        <span class="node-name">Consensus Node 01</span>
+                    </div>
+                    <span class="node-role-pill">Primary Validator</span>
+                </div>
+                <h5 class="node-facility">DFSL Central Forensic Enclave</h5>
+                <div class="node-specs-row">
+                    <div>
+                        <span class="spec-label">Location</span>
+                        <span class="spec-val">Mumbai HQ</span>
+                    </div>
+                    <div>
+                        <span class="spec-label">Latency</span>
+                        <span class="spec-val font-mono text-teal">12 ms</span>
+                    </div>
+                    <div>
+                        <span class="spec-label">Block Height</span>
+                        <span class="spec-val font-mono">#89,109</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="node-health-card">
+                <div class="node-card-top">
+                    <div class="node-title-group">
+                        <span class="pulse-indicator"></span>
+                        <span class="node-name">Consensus Node 02</span>
+                    </div>
+                    <span class="node-role-pill">Judicial Node</span>
+                </div>
+                <h5 class="node-facility">High Court Judicial Registry</h5>
+                <div class="node-specs-row">
+                    <div>
+                        <span class="spec-label">Location</span>
+                        <span class="spec-val">Nagpur Bench</span>
+                    </div>
+                    <div>
+                        <span class="spec-label">Latency</span>
+                        <span class="spec-val font-mono text-teal">18 ms</span>
+                    </div>
+                    <div>
+                        <span class="spec-label">Block Height</span>
+                        <span class="spec-val font-mono">#89,109</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="node-health-card">
+                <div class="node-card-top">
+                    <div class="node-title-group">
+                        <span class="pulse-indicator"></span>
+                        <span class="node-name">Consensus Node 03</span>
+                    </div>
+                    <span class="node-role-pill">Law Enforcement Node</span>
+                </div>
+                <h5 class="node-facility">NCRB National Crime Records Node</h5>
+                <div class="node-specs-row">
+                    <div>
+                        <span class="spec-label">Location</span>
+                        <span class="spec-val">New Delhi Enclave</span>
+                    </div>
+                    <div>
+                        <span class="spec-label">Latency</span>
+                        <span class="spec-val font-mono text-teal">24 ms</span>
+                    </div>
+                    <div>
+                        <span class="spec-label">Block Height</span>
+                        <span class="spec-val font-mono">#89,109</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="onchain-anchors-section">
+        <div class="anchors-header-line">
+            <div class="anchors-title">
+                <i class="ph-fill ph-cubes text-gold"></i>
+                <div>
+                    <h4>Recent Cryptographic Anchor Blocks</h4>
+                    <p>Permanently committed immutable blocks containing digitized court evidence payloads</p>
+                </div>
+            </div>
+            <span class="anchors-counter font-mono">Displaying 3 Most Recent Blocks</span>
+        </div>
+
+        <div class="anchor-blocks-grid">
+            <div class="block-artifact-card">
+                <div class="block-card-head">
+                    <div class="block-number font-mono">
+                        <i class="ph-fill ph-cube"></i>
+                        <span>BLOCK #89109</span>
+                    </div>
+                    <span class="block-badge-valid"><i class="ph-fill ph-check-circle"></i> Merkle Committed</span>
+                </div>
+                <h5 class="artifact-title">CCTV_ServerRoom_Access.mp4</h5>
+                <div class="artifact-docket-meta">
+                    <span class="font-mono text-gold">CR-2026-MH01</span>
+                    <span>•</span>
+                    <span>Insp. Rahul Sharma</span>
+                    <span>•</span>
+                    <span class="font-mono">02 Aug 2026 17:30</span>
+                </div>
+                <div class="hash-display-pill font-mono">
+                    <span class="hash-tag-label">TX HASH:</span>
+                    <span class="hash-str">0x38adf81023c914e0821b9aedfc091244e8912c9182a47b19a0e142b9c0192841</span>
+                </div>
+                <div class="block-card-foot">
+                    <span class="seal-compliance-text">BSA 63/65B Legal Relay Certified</span>
+                    <button class="btn-block-inspect" data-block="89109" data-tx="0x38adf81023c914e0821b9aedfc091244e8912c9182a47b19a0e142b9c0192841" data-file="CCTV_ServerRoom_Access.mp4" data-docket="CR-2026-MH01" data-time="02 Aug 2026 17:30 IST">
+                        <i class="ph ph-certificate"></i> View Proof
+                    </button>
+                </div>
+            </div>
+
+            <div class="block-artifact-card">
+                <div class="block-card-head">
+                    <div class="block-number font-mono">
+                        <i class="ph-fill ph-cube"></i>
+                        <span>BLOCK #89106</span>
+                    </div>
+                    <span class="block-badge-valid"><i class="ph-fill ph-check-circle"></i> Merkle Committed</span>
+                </div>
+                <h5 class="artifact-title">FIR_MH26_0124.pdf</h5>
+                <div class="artifact-docket-meta">
+                    <span class="font-mono text-gold">CR-2026-MH01</span>
+                    <span>•</span>
+                    <span>Cyber Cell PS, Bhandara</span>
+                    <span>•</span>
+                    <span class="font-mono">02 Aug 2026 10:45</span>
+                </div>
+                <div class="hash-display-pill font-mono">
+                    <span class="hash-tag-label">TX HASH:</span>
+                    <span class="hash-str">0x7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730</span>
+                </div>
+                <div class="block-card-foot">
+                    <span class="seal-compliance-text">BSA 63/65B Legal Relay Certified</span>
+                    <button class="btn-block-inspect" data-block="89106" data-tx="0x7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730" data-file="FIR_MH26_0124.pdf" data-docket="CR-2026-MH01" data-time="02 Aug 2026 10:45 IST">
+                        <i class="ph ph-certificate"></i> View Proof
+                    </button>
+                </div>
+            </div>
+
+            <div class="block-artifact-card">
+                <div class="block-card-head">
+                    <div class="block-number font-mono">
+                        <i class="ph-fill ph-cube"></i>
+                        <span>BLOCK #89104</span>
+                    </div>
+                    <span class="block-badge-valid"><i class="ph-fill ph-check-circle"></i> Merkle Committed</span>
+                </div>
+                <h5 class="artifact-title">Forensic_MemoryDump_Analysis.raw</h5>
+                <div class="artifact-docket-meta">
+                    <span class="font-mono text-gold">CR-2026-MH01</span>
+                    <span>•</span>
+                    <span>DFSL Digital Lab</span>
+                    <span>•</span>
+                    <span class="font-mono">02 Aug 2026 10:30</span>
+                </div>
+                <div class="hash-display-pill font-mono">
+                    <span class="hash-tag-label">TX HASH:</span>
+                    <span class="hash-str">0x4f8a92b3c1048e91827419baedbc58129a01f8d9b2341256789abcdef0123456</span>
+                </div>
+                <div class="block-card-foot">
+                    <span class="seal-compliance-text">BSA 63/65B Legal Relay Certified</span>
+                    <button class="btn-block-inspect" data-block="89104" data-tx="0x4f8a92b3c1048e91827419baedbc58129a01f8d9b2341256789abcdef0123456" data-file="Forensic_MemoryDump_Analysis.raw" data-docket="CR-2026-MH01" data-time="02 Aug 2026 10:30 IST">
+                        <i class="ph ph-certificate"></i> View Proof
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="modal-backdrop" id="blockchainCertModal">
+    <div class="modal-dialog cert-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-certificate modal-icon-badge"></i>
+                <div>
+                    <h3 id="modalCertHeading">Decentralized Evidence Certificate</h3>
+                    <p id="modalCertSub">Bharatiya Sakshya Adhiniyam, 2023 Compliant Digital Certificate</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="blockchainCertModal"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="cert-printable-paper" id="printableBlockchainCert">
+                <div class="cert-watermark-overlay">VERIFIED</div>
+                <div class="cert-paper-head">
+                    <span class="gov-title">GOVERNMENT OF MAHARASHTRA • JUDICIAL DIGITAL REPOSITORY</span>
+                    <h4>STATUTORY PROOF OF EXISTENCE & INTEGRITY CERTIFICATE</h4>
+                    <span class="statutory-cite">Issued under Section 63 & 65B of the Bharatiya Sakshya Adhiniyam (BSA), 2023</span>
+                </div>
+
+                <div class="cert-grid-fields">
+                    <div class="field-item">
+                        <span class="f-label">EVIDENCE ARTIFACT</span>
+                        <span class="f-val font-mono" id="certFieldFile">FIR_MH26_0124.pdf</span>
+                    </div>
+                    <div class="field-item">
+                        <span class="f-label">CASE DOCKET NUMBER</span>
+                        <span class="f-val font-mono text-gold" id="certFieldDocket">CR-2026-MH01</span>
+                    </div>
+                    <div class="field-item">
+                        <span class="f-label">ON-CHAIN BLOCK HEIGHT</span>
+                        <span class="f-val font-mono" id="certFieldBlock">Block #89104</span>
+                    </div>
+                    <div class="field-item">
+                        <span class="f-label">BLOCKCHAIN COMMIT TIMESTAMP</span>
+                        <span class="f-val font-mono" id="certFieldTime">02 Aug 2026 10:30 IST</span>
+                    </div>
+                </div>
+
+                <div class="cert-hash-box">
+                    <span class="f-label">IMMUTABLE CRYPTOGRAPHIC SHA-256 DIGEST</span>
+                    <span class="f-val-hash font-mono" id="certFieldHash">4f8a92b3c1048e91827419baedbc58129a01f8d9b2341256789abcdef0123456</span>
+                </div>
+
+                <div class="cert-declaration-text">
+                    <p>This certifies that the digital asset described above was submitted directly to the GovNet Blockchain Consortium. The cryptographic hash was validated and immutably committed by consensus across all designated Law Enforcement, Forensic, and Judicial validator nodes. The bitstream structure remains completely unchanged and legally admissible in trial proceedings.</p>
+                </div>
+
+                <div class="cert-signatures-row">
+                    <div class="cert-seal-stamp">
+                        <i class="ph-fill ph-seal-check"></i>
+                        <span>CONSENSUS VERIFIED</span>
+                        <span class="stamp-sub font-mono">BFT-Raft • 3/3 Nodes</span>
+                    </div>
+                    <div class="cert-signatory">
+                        <span class="sign-line"></span>
+                        <span class="sign-title">Digital Signature Authority</span>
+                        <span class="sign-org">DFSL Cyber Forensics Directorate</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" data-close="blockchainCertModal">Close</button>
+            <button type="button" class="btn-primary-action" id="btnPrintCert">
+                <i class="ph ph-printer"></i> Print Judicial Certificate
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/blockchain.js' %}"></script>
+{% endblock %}

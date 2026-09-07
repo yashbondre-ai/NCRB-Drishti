@@ -65,11 +65,21 @@ class CaseViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def documents(self, request, pk=None):
         case = self.get_object()
-        try:
-            from apps.documents.serializers import DocumentSerializer
-        except (ImportError, AttributeError):
-            return Response({'detail': 'Document management is not installed.'}, status=501)
-        return Response(DocumentSerializer(case.documents.all(), many=True, context={'request': request}).data)
+        documents = case.documents.filter(is_deleted=False).order_by("-created_at")
+        return Response(
+            [
+                {
+                    "id": document.id,
+                    "title": document.title,
+                    "description": document.description,
+                    "case_id": document.case_id,
+                    "created_by": document.created_by_id,
+                    "created_at": document.created_at,
+                    "updated_at": document.updated_at,
+                }
+                for document in documents
+            ]
+        )
 
     @action(detail=False, methods=['get'])
     def my_cases(self, request):

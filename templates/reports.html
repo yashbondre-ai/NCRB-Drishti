@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Executive Reports & Analytics | NCRB-Drishti{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+{% endblock %}
+
+{% block page_title %}Executive Judicial & Crime Intelligence Reports{% endblock %}
+{% block page_subtitle %}Statutory Compliance Dossiers • Case Clearance Rates & Forensic Audit Analytics{% endblock %}
+
+{% block content %}
+<div class="reports-container">
+    <section class="generator-studio-card">
+        <div class="studio-header">
+            <div class="studio-title-wrap">
+                <i class="ph-fill ph-file-plus text-gold"></i>
+                <div>
+                    <h4>Statutory Report Generation Studio</h4>
+                    <p>Compile court-admissible audit reports with cryptographic hash authentication</p>
+                </div>
+            </div>
+            <span class="studio-badge">MHA Gazette Protocol</span>
+        </div>
+        <form id="reportGeneratorForm" class="studio-controls-grid">
+            <div class="control-group">
+                <label>Report Template</label>
+                <select id="reportTemplateSelect" required>
+                    <option value="district_clearance">District Crime Inflow vs. Clearance Audit</option>
+                    <option value="forensic_tat">Forensic Lab Turnaround & Evidence Custody Audit</option>
+                    <option value="bsa_compliance">BSA Section 63/65B Legal Admissibility Report</option>
+                    <option value="chargesheet_ratio">Statutory Charge Sheet (60/90 Days) Ratio</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Jurisdiction / Station</label>
+                <select id="jurisdictionSelect">
+                    <option value="all">All District Stations (Bhandara Range)</option>
+                    <option value="cyber">Cyber Cell PS, Bhandara</option>
+                    <option value="sakoli">Sakoli Police Station</option>
+                    <option value="mohadi">Mohadi Police Station</option>
+                    <option value="city">Bhandara City Police Station</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Statutory Period</label>
+                <select id="periodSelect">
+                    <option value="q3_2026">Current Quarter (Q3 2026)</option>
+                    <option value="aug_2026">August 2026</option>
+                    <option value="ytd_2026">Year-to-Date (YTD 2026)</option>
+                    <option value="annual_2025">Annual Fiscal Ledger (2025-26)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Output Format</label>
+                <select id="formatSelect">
+                    <option value="pdf">Signed Court PDF (Digital Seal)</option>
+                    <option value="csv">Audited Spreadsheet (CSV)</option>
+                    <option value="json">TiDB Consensus Ledger (JSON)</option>
+                </select>
+            </div>
+            <div class="control-action">
+                <button type="submit" class="btn-generate-report" id="btnCompileReport">
+                    <i class="ph-fill ph-gear"></i>
+                    <span>Generate Dossier</span>
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="reports-analytics-layout">
+        <div class="analytics-card trend-chart-panel">
+            <div class="panel-header">
+                <div>
+                    <h4>Case Inflow vs. Judicial Charge Sheet Clearance</h4>
+                    <span class="panel-subtext">Monthly comparative performance across all active police jurisdictions</span>
+                </div>
+                <div class="chart-legend-row">
+                    <span class="legend-item"><span class="legend-box box-inflow"></span> Registered Crimes</span>
+                    <span class="legend-item"><span class="legend-box box-clearance"></span> Charge Sheets Committed</span>
+                </div>
+            </div>
+            <div class="chart-canvas-wrapper">
+                <canvas id="clearanceTrendChart" width="600" height="240"></canvas>
+            </div>
+        </div>
+
+        <div class="analytics-card compliance-score-panel">
+            <div class="panel-header">
+                <h4>Forensic Compliance Gauges</h4>
+                <span class="panel-subtext">Statutory validation thresholds</span>
+            </div>
+            <div class="gauges-cluster">
+                <div class="gauge-card">
+                    <div class="gauge-ring-box">
+                        <svg viewBox="0 0 36 36" class="circular-chart teal">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle" stroke-dasharray="99.9, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <span class="gauge-metric font-mono">99.9%</span>
+                    </div>
+                    <div class="gauge-text">
+                        <span class="gauge-title">BSA 65B Admissibility</span>
+                        <span class="gauge-sub">8,638 of 8,642 Intact</span>
+                    </div>
+                </div>
+
+                <div class="gauge-card">
+                    <div class="gauge-ring-box">
+                        <svg viewBox="0 0 36 36" class="circular-chart gold">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle" stroke-dasharray="84.2, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <span class="gauge-metric font-mono">84.2%</span>
+                    </div>
+                    <div class="gauge-text">
+                        <span class="gauge-title">Statutory Charge Sheet Rate</span>
+                        <span class="gauge-sub">Filed within 60/90 Days</span>
+                    </div>
+                </div>
+
+                <div class="gauge-card">
+                    <div class="gauge-ring-box">
+                        <svg viewBox="0 0 36 36" class="circular-chart blue">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle" stroke-dasharray="92, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <span class="gauge-metric font-mono">6.4d</span>
+                    </div>
+                    <div class="gauge-text">
+                        <span class="gauge-title">Forensic Lab TAT</span>
+                        <span class="gauge-sub">Average Lab Turnaround</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="published-catalog-section">
+        <div class="catalog-header-line">
+            <div class="catalog-title-group">
+                <i class="ph-fill ph-books text-teal"></i>
+                <div>
+                    <h4>Official Published Gazettes & Audit Bulletins</h4>
+                    <p>Pre-compiled, cryptographically sealed executive dossiers ready for court production</p>
+                </div>
+            </div>
+            <div class="catalog-filters">
+                <button class="catalog-tab active" data-cat="all">All Dossiers</button>
+                <button class="catalog-tab" data-cat="crime">Crime Statistics</button>
+                <button class="catalog-tab" data-cat="audit">Forensic Audits</button>
+                <button class="catalog-tab" data-cat="court">Judicial Gazettes</button>
+            </div>
+        </div>
+
+        <div class="published-grid" id="publishedGrid">
+            <div class="published-card" data-cat="audit">
+                <div class="published-top">
+                    <div class="format-seal-pill">
+                        <span class="doc-badge badge-red">PDF</span>
+                        <span class="seal-auth-tag"><i class="ph-fill ph-seal-check"></i> MHA Verified</span>
+                    </div>
+                    <span class="published-date font-mono">01 Sep 2026</span>
+                </div>
+                <h5 class="published-title">Monthly Cryptographic Evidence Audit (August 2026)</h5>
+                <p class="published-desc">Bit-level verification report of all 8,642 evidence hashes vaulted across regional police enclaves.</p>
+                <div class="published-meta">
+                    <div class="meta-item">
+                        <span class="m-label">Signatory</span>
+                        <span class="m-val">Director, DFSL Cyber Lab</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="m-label">Size & Scope</span>
+                        <span class="m-val font-mono">4.2 MB • 1,248 Dockets</span>
+                    </div>
+                </div>
+                <div class="published-footer">
+                    <span class="font-mono digest-code">SHA-256: 4f8a...0123</span>
+                    <div class="card-btn-cluster">
+                        <button class="btn-card-action btn-preview-report" title="View Dossier"><i class="ph ph-eye"></i> Preview</button>
+                        <button class="btn-card-action btn-download-report" title="Download Signed PDF"><i class="ph ph-download-simple"></i> Download</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="published-card" data-cat="crime">
+                <div class="published-top">
+                    <div class="format-seal-pill">
+                        <span class="doc-badge badge-red">PDF</span>
+                        <span class="seal-auth-tag"><i class="ph-fill ph-seal-check"></i> SP Signed</span>
+                    </div>
+                    <span class="published-date font-mono">15 Aug 2026</span>
+                </div>
+                <h5 class="published-title">District Crime Inflow & Disposal Bulletin (Q2 2026)</h5>
+                <p class="published-desc">Comprehensive crime index covering Sakoli, Mohadi, and Bhandara ranges under Bharatiya Nyaya Sanhita.</p>
+                <div class="published-meta">
+                    <div class="meta-item">
+                        <span class="m-label">Signatory</span>
+                        <span class="m-val">Superintendent of Police</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="m-label">Size & Scope</span>
+                        <span class="m-val font-mono">8.1 MB • 2,340 Records</span>
+                    </div>
+                </div>
+                <div class="published-footer">
+                    <span class="font-mono digest-code">SHA-256: 7d86...9773</span>
+                    <div class="card-btn-cluster">
+                        <button class="btn-card-action btn-preview-report" title="View Dossier"><i class="ph ph-eye"></i> Preview</button>
+                        <button class="btn-card-action btn-download-report" title="Download Signed PDF"><i class="ph ph-download-simple"></i> Download</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="published-card" data-cat="court">
+                <div class="published-top">
+                    <div class="format-seal-pill">
+                        <span class="doc-badge badge-teal">CSV</span>
+                        <span class="seal-auth-tag"><i class="ph-fill ph-seal-check"></i> Court Ledger</span>
+                    </div>
+                    <span class="published-date font-mono">02 Aug 2026</span>
+                </div>
+                <h5 class="published-title">Section 65B Certified Admissibility Ledger</h5>
+                <p class="published-desc">Full machine-readable electronic chain-of-custody dump for Sessions Court trial hearings.</p>
+                <div class="published-meta">
+                    <div class="meta-item">
+                        <span class="m-label">Signatory</span>
+                        <span class="m-val">Registrar, Sessions Court</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="m-label">Size & Scope</span>
+                        <span class="m-val font-mono">1.8 MB • 420 Cases</span>
+                    </div>
+                </div>
+                <div class="published-footer">
+                    <span class="font-mono digest-code">SHA-256: b94d...fcde</span>
+                    <div class="card-btn-cluster">
+                        <button class="btn-card-action btn-preview-report" title="View Dossier"><i class="ph ph-eye"></i> Preview</button>
+                        <button class="btn-card-action btn-download-report" title="Download CSV File"><i class="ph ph-download-simple"></i> Download</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="modal-backdrop" id="reportPreviewModal">
+    <div class="modal-dialog report-modal-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-file-text modal-icon-badge"></i>
+                <div>
+                    <h3 id="modalReportTitle">Monthly Cryptographic Evidence Audit</h3>
+                    <p id="modalReportSubtitle">State Crime Record Gazette • Section 65B Certified</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="reportPreviewModal"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="report-preview-sheet" id="printableReportSheet">
+                <div class="rep-sheet-header">
+                    <span class="official-label">CENTRAL DIGITAL INVESTIGATION VAULT</span>
+                    <h4>EXECUTIVE STATUTORY DOSSIER</h4>
+                    <span class="rep-confidential-stamp">CONFIDENTIAL • COURT PRODUCTION ONLY</span>
+                </div>
+                <div class="rep-sheet-meta-grid">
+                    <div><strong>Subject:</strong> <span id="repSheetSubject">Evidence Integrity Verification</span></div>
+                    <div><strong>Date Generated:</strong> <span class="font-mono" id="repSheetDate">06 Sep 2026</span></div>
+                    <div><strong>Executing Officer:</strong> <span>Insp. Rahul Sharma (CID)</span></div>
+                    <div><strong>Ledger Node:</strong> <span class="font-mono">TiDB Cluster #IN-MHA-01</span></div>
+                </div>
+                <div class="rep-sheet-summary-box">
+                    <h5>Audit Executive Summary</h5>
+                    <p id="repSheetSummary">A full automated verification executed across all 8,642 vaulted digital assets confirmed 99.95% integrity adherence. 4 files remain quarantined in tamper-isolation enclaves pending court order.</p>
+                </div>
+                <div class="rep-sheet-seal-block">
+                    <div class="rep-seal-item">
+                        <i class="ph-fill ph-seal-check text-gold"></i>
+                        <div>
+                            <span class="seal-title">NATIONAL CRIME RECORDS BUREAU</span>
+                            <span class="seal-sub">AUTHENTICATED ELECTRONIC RECORD</span>
+                        </div>
+                    </div>
+                    <div class="rep-sign-signature">
+                        <span class="sign-line-bar"></span>
+                        <span class="sign-role-title">Competent Authority Signatory</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" data-close="reportPreviewModal">Close</button>
+            <button type="button" class="btn-primary-action" id="btnPrintReportDossier">
+                <i class="ph ph-printer"></i> Print Gazette Dossier
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/reports.js' %}"></script>
+{% endblock %}

@@ -1,21 +1,33 @@
-from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, JsonResponse
-from .services.audit_service import create_audit_log
-from .services.delete_service import soft_delete_document
-from django.views.decorators.http import require_POST
+from rest_framework.decorators import api_view, parser_classes, permission_classes
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.permissions import IsAuthenticated
+
 from .models import Document, DocumentVersion
+from .services.access import user_can_access_case
+from .services.audit_service import create_audit_log
 from .services.blockchain_service import verify_blockchain_record
+from .services.delete_service import soft_delete_document
 from .services.upload_service import (
     upload_document,
     upload_document_version,
 )
 
-@login_required
-@require_POST
+
+def _forbidden():
+    return JsonResponse(
+        {"success": False, "error": "You do not have access to this resource."},
+        status=403,
+    )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
 def upload_document_view(request):
-    case_id = request.POST.get("case_id")
-    title = request.POST.get("title")
-    description = request.POST.get("description", "")
+    case_id = request.data.get("case_id")
+    title = request.data.get("title")
+    description = request.data.get("description", "")
     uploaded_file = request.FILES.get("file")
 
     if not case_id:
@@ -35,6 +47,9 @@ def upload_document_view(request):
             {"success": False, "error": "Document file is required."},
             status=400,
         )
+
+    if not user_can_access_case(request.user, case_id):
+        return _forbidden()
 
     try:
         document, version = upload_document(
@@ -72,8 +87,10 @@ def upload_document_view(request):
         status=201,
     )
 
-@login_required
-@require_POST
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
 def upload_document_version_view(request, document_id):
     uploaded_file = request.FILES.get("file")
 
@@ -85,6 +102,17 @@ def upload_document_version_view(request, document_id):
             },
             status=400,
         )
+
+    try:
+        document = Document.objects.get(pk=document_id, is_deleted=False)
+    except Document.DoesNotExist:
+        return JsonResponse(
+            {"success": False, "error": "Document not found."},
+            status=404,
+        )
+
+    if not user_can_access_case(request.user, document.case_id):
+        return _forbidden()
 
     try:
         version = upload_document_version(
@@ -114,13 +142,15 @@ def upload_document_version_view(request, document_id):
                 "sha256_hash": version.sha256_hash,
                 "file_size": version.file_size,
                 "mime_type": version.mime_type,
-                "uploaded_by": version.uploaded_by.username,
+                "uploaded_by": version.uploaded_by.email,
             },
         },
         status=201,
     )
 
-@login_required
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def download_document_version_view(request, version_id):
     try:
         version = DocumentVersion.objects.select_related(
@@ -139,30 +169,29 @@ def download_document_version_view(request, version_id):
             status=404,
         )
 
-    create_audit_log(
-       user=request.user,
-       document=version.document,
-       document_version=version,
-       action="download",
-       details={
-        "filename": version.original_filename,
-        "version": version.version_number,
-    },
-)
+    if not user_can_access_case(request.user, version.document.case_id):
+        return _forbidden()
 
-    response = FileResponse(
+    create_audit_log(
+        user=request.user,
+        document=version.document,
+        document_version=version,
+        action="download",
+        details={
+            "filename": version.original_filename,
+            "version": version.version_number,
+        },
+    )
+
+    return FileResponse(
         version.file.open("rb"),
         as_attachment=True,
         filename=version.original_filename,
-)
+    )
 
-    return response
 
-    
-
-   
-
-@login_required
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def verify_document_version_view(request, version_id):
     try:
         version = DocumentVersion.objects.select_related(
@@ -181,22 +210,25 @@ def verify_document_version_view(request, version_id):
             status=404,
         )
 
+    if not user_can_access_case(request.user, version.document.case_id):
+        return _forbidden()
+
     result = verify_blockchain_record(
         document_version=version,
     )
     create_audit_log(
-    user=request.user,
-    document=version.document,
-    document_version=version,
-    action="verify",
-    details={
-        "verification_status": result["status"],
-        "verified": result["verified"],
-        "message": result["message"],
-        "document_hash": result.get("document_hash"),
-        "blockchain_hash": result.get("blockchain_hash"),
-    },
-)
+        user=request.user,
+        document=version.document,
+        document_version=version,
+        action="verify",
+        details={
+            "verification_status": result["status"],
+            "verified": result["verified"],
+            "message": result["message"],
+            "document_hash": result.get("document_hash"),
+            "blockchain_hash": result.get("blockchain_hash"),
+        },
+    )
 
     return JsonResponse(
         {
@@ -205,9 +237,25 @@ def verify_document_version_view(request, version_id):
         },
         status=200,
     )
-@login_required
-@require_POST
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def delete_document_view(request, document_id):
+    try:
+        document = Document.objects.get(pk=document_id, is_deleted=False)
+    except Document.DoesNotExist:
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "Document not found.",
+            },
+            status=404,
+        )
+
+    if not user_can_access_case(request.user, document.case_id):
+        return _forbidden()
+
     try:
         document = soft_delete_document(
             document_id=document_id,
@@ -232,7 +280,6 @@ def delete_document_view(request, document_id):
             status=400,
         )
 
-    # Create audit log after successful soft delete.
     create_audit_log(
         user=request.user,
         document=document,
@@ -256,10 +303,17 @@ def delete_document_view(request, document_id):
         },
         status=200,
     )
-@login_required
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def document_list_view(request):
+    from apps.cases.services import CaseService
+
+    visible_case_ids = CaseService.get_user_cases(request.user).values_list("id", flat=True)
     documents = Document.objects.filter(
-        is_deleted=False
+        is_deleted=False,
+        case_id__in=visible_case_ids,
     ).order_by("-created_at")
 
     return JsonResponse(

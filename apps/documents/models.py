@@ -163,5 +163,5 @@ class AuditLog(models.Model):
         return (
             f"{self.action} - "
             f"{self.document.title} - "
-            f"{self.user.username}"
+            f"{self.user.email}"
         )

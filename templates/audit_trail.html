@@ -1,0 +1,434 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cryptographic Audit Trail | NCRB-Drishti{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/audit_trail.css' %}">
+{% endblock %}
+
+{% block page_title %}Cryptographic Audit Trail & Tamper-Evident Ledger{% endblock %}
+{% block page_subtitle %}Non-Repudiation Security Registry • Chained SHA-256 Telemetry Compliant with BSA Section 63/65B{% endblock %}
+
+{% block content %}
+<div class="audit-container">
+    <section class="audit-kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-teal">
+                <i class="ph-fill ph-list-numbers"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Total Audit Events</span>
+                <h3 class="kpi-value">42,891</h3>
+                <span class="kpi-trend trend-teal">Immutable Ledger Blocks</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-success">
+                <i class="ph-fill ph-link"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Ledger Chain Integrity</span>
+                <h3 class="kpi-value">100%</h3>
+                <span class="kpi-trend trend-up">Zero Broken Links</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-amber">
+                <i class="ph-fill ph-key"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Privileged Access Events</span>
+                <h3 class="kpi-value">142</h3>
+                <span class="kpi-trend trend-warn">Escalated Authorization</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon-box icon-danger">
+                <i class="ph-fill ph-shield-warning"></i>
+            </div>
+            <div class="kpi-content">
+                <span class="kpi-label">Security Incidents</span>
+                <h3 class="kpi-value">3</h3>
+                <span class="kpi-trend trend-danger">Quarantined Interceptions</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="audit-toolbar-panel">
+        <div class="toolbar-left">
+            <div class="search-filter-box">
+                <i class="ph ph-magnifying-glass"></i>
+                <input type="text" id="auditSearchInput" placeholder="Filter by officer badge, event signature, IP, or docket ID...">
+            </div>
+            <div class="filter-chips-cluster">
+                <button class="audit-chip active" data-filter="all">All Events</button>
+                <button class="audit-chip" data-filter="auth">Authentication</button>
+                <button class="audit-chip" data-filter="vault">Evidence Access</button>
+                <button class="audit-chip" data-filter="security">Security & Alerts</button>
+                <button class="audit-chip" data-filter="admin">Privilege Admin</button>
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <button class="btn-primary-action" id="btnVerifyAuditChain">
+                <i class="ph-fill ph-shield-check"></i>
+                <span>Verify Ledger Integrity</span>
+            </button>
+        </div>
+    </section>
+
+    <section class="panel-card audit-table-panel">
+        <div class="panel-header">
+            <div>
+                <h4>Statutory Security Log Stream</h4>
+                <span class="panel-subtext">Cryptographically chained ledger blocks synced to TiDB Cloud distributed nodes</span>
+            </div>
+            <div class="table-meta-tag">
+                <span id="auditRecordCounter">Showing 6 of 6 Records</span>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="lex-table" id="auditMasterTable">
+                <thead>
+                    <tr>
+                        <th>Block #</th>
+                        <th>Timestamp (IST)</th>
+                        <th>Event Action & Classification</th>
+                        <th>Actor & Terminal ID</th>
+                        <th>Target Docket / Artifact</th>
+                        <th>Chained Digest (Previous → Current)</th>
+                        <th>Verification Status</th>
+                        <th class="text-right">Payload</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-type="vault"
+                        data-status="verified"
+                        data-block="89104"
+                        data-time="02 Aug 2026, 10:30:14.281"
+                        data-action="EVIDENCE_INGEST_SHA256"
+                        data-actor="Insp. Rahul Sharma (CID-8812)"
+                        data-ip="192.168.1.45 (Terminal-CID-BHD01)"
+                        data-target="FIR_MH26_0124.pdf (CR-2026-MH01)"
+                        data-prev-hash="c28a9b12...49e1"
+                        data-curr-hash="4f8a92b3...0123"
+                        data-payload='{"action": "INGEST", "file": "FIR_MH26_0124.pdf", "hash": "4f8a92b3c1048e91827419baedbc58129a01f8d9b2341256789abcdef0123456", "bsa_compliance": true, "session": "sess_89104a"}'>
+                        <td class="font-mono block-id-cell">#89104</td>
+                        <td class="font-mono time-cell">02 Aug 10:30:14</td>
+                        <td>
+                            <div class="event-action-wrap">
+                                <span class="action-tag tag-vault"><i class="ph-fill ph-file-arrow-up"></i> EVIDENCE_INGEST</span>
+                                <span class="action-sub">SHA-256 Vault Commitment</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="actor-block">
+                                <span class="actor-name">Insp. Rahul Sharma</span>
+                                <span class="actor-ip font-mono">192.168.1.45</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="target-title">FIR_MH26_0124.pdf</span>
+                            <span class="target-docket font-mono text-gold">CR-2026-MH01</span>
+                        </td>
+                        <td>
+                            <div class="chain-flow-box">
+                                <span class="chain-hash font-mono">c28a...49e1</span>
+                                <i class="ph ph-arrow-right text-teal"></i>
+                                <span class="chain-hash font-mono text-teal">4f8a...0123</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Chained & Valid</span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn-inspect-payload" title="Inspect Raw Log Payload"><i class="ph ph-code"></i></button>
+                        </td>
+                    </tr>
+
+                    <tr data-type="vault"
+                        data-status="verified"
+                        data-block="89105"
+                        data-time="02 Aug 2026, 10:45:22.109"
+                        data-action="CHAIN_OF_CUSTODY_EXPORT"
+                        data-actor="Insp. Rahul Sharma (CID-8812)"
+                        data-ip="192.168.1.45 (Terminal-CID-BHD01)"
+                        data-target="FIR_MH26_0124.pdf (CR-2026-MH01)"
+                        data-prev-hash="4f8a92b3...0123"
+                        data-curr-hash="7d865e95...9773"
+                        data-payload='{"action": "CUSTODY_DOCKET_EXPORT", "target": "FIR_MH26_0124.pdf", "docket": "CR-2026-MH01", "requested_by": "Sessions Court Registrar", "watermark": "CERT_65B_MHA"}'>
+                        <td class="font-mono block-id-cell">#89105</td>
+                        <td class="font-mono time-cell">02 Aug 10:45:22</td>
+                        <td>
+                            <div class="event-action-wrap">
+                                <span class="action-tag tag-teal"><i class="ph-fill ph-certificate"></i> CERT_65B_EXPORT</span>
+                                <span class="action-sub">Judicial Docket Generation</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="actor-block">
+                                <span class="actor-name">Insp. Rahul Sharma</span>
+                                <span class="actor-ip font-mono">192.168.1.45</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="target-title">FIR_MH26_0124.pdf</span>
+                            <span class="target-docket font-mono text-gold">CR-2026-MH01</span>
+                        </td>
+                        <td>
+                            <div class="chain-flow-box">
+                                <span class="chain-hash font-mono">4f8a...0123</span>
+                                <i class="ph ph-arrow-right text-teal"></i>
+                                <span class="chain-hash font-mono text-teal">7d86...9773</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Chained & Valid</span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn-inspect-payload" title="Inspect Raw Log Payload"><i class="ph ph-code"></i></button>
+                        </td>
+                    </tr>
+
+                    <tr data-type="security"
+                        data-status="flagged"
+                        data-block="89106"
+                        data-time="02 Aug 2026, 12:10:04.954"
+                        data-action="TAMPER_MISMATCH_ALERT"
+                        data-actor="Automated DFSL Validator Node 02"
+                        data-ip="10.0.4.12 (Enclave Network)"
+                        data-target="Evidence_33.pdf (CR-2026-MH04)"
+                        data-prev-hash="7d865e95...9773"
+                        data-curr-hash="a591a6d4...146e"
+                        data-payload='{"action": "TAMPER_DETECTED", "file": "Evidence_33.pdf", "detected_hash": "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e", "consensus_state": "QUARANTINED", "severity": "CRITICAL"}'>
+                        <td class="font-mono block-id-cell text-danger">#89106</td>
+                        <td class="font-mono time-cell">02 Aug 12:10:04</td>
+                        <td>
+                            <div class="event-action-wrap">
+                                <span class="action-tag tag-danger"><i class="ph-fill ph-warning-octagon"></i> TAMPER_DETECTED</span>
+                                <span class="action-sub text-danger">Hash Checksum Corrupted</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="actor-block">
+                                <span class="actor-name">DFSL Validator Node 02</span>
+                                <span class="actor-ip font-mono">10.0.4.12</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="target-title">Evidence_33.pdf</span>
+                            <span class="target-docket font-mono text-gold">CR-2026-MH04</span>
+                        </td>
+                        <td>
+                            <div class="chain-flow-box">
+                                <span class="chain-hash font-mono">7d86...9773</span>
+                                <i class="ph ph-arrow-right text-danger"></i>
+                                <span class="chain-hash font-mono text-danger">a591...146e</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-tag status-flagged"><i class="ph-fill ph-warning-octagon"></i> Integrity Violated</span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn-inspect-payload" title="Inspect Raw Log Payload"><i class="ph ph-code"></i></button>
+                        </td>
+                    </tr>
+
+                    <tr data-type="admin"
+                        data-status="verified"
+                        data-block="89107"
+                        data-time="02 Aug 2026, 14:20:11.002"
+                        data-action="ROLE_PERMISSION_UPDATE"
+                        data-actor="System SuperAdmin (ADM-001)"
+                        data-ip="192.168.1.10 (HQ Gateway)"
+                        data-target="Role: Forensic Investigator (Level-3)"
+                        data-prev-hash="a591a6d4...146e"
+                        data-curr-hash="ca978112...48bb"
+                        data-payload='{"action": "RBAC_GRANT", "role": "Forensic_Investigator_L3", "granted_to": "Neha Patil", "scope": ["CCTV_DECRYPT", "RAW_MEMORY_AUDIT"], "authorized_by": "SP Bhandara"}'>
+                        <td class="font-mono block-id-cell">#89107</td>
+                        <td class="font-mono time-cell">02 Aug 14:20:11</td>
+                        <td>
+                            <div class="event-action-wrap">
+                                <span class="action-tag tag-amber"><i class="ph-fill ph-key"></i> RBAC_PERMISSION_UPDATE</span>
+                                <span class="action-sub">Elevated L3 Clearance Granted</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="actor-block">
+                                <span class="actor-name">System SuperAdmin</span>
+                                <span class="actor-ip font-mono">192.168.1.10</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="target-title">Forensic Investigator (L3)</span>
+                            <span class="target-docket font-mono text-gold">Officer: Neha Patil</span>
+                        </td>
+                        <td>
+                            <div class="chain-flow-box">
+                                <span class="chain-hash font-mono">a591...146e</span>
+                                <i class="ph ph-arrow-right text-teal"></i>
+                                <span class="chain-hash font-mono text-teal">ca97...48bb</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Chained & Valid</span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn-inspect-payload" title="Inspect Raw Log Payload"><i class="ph ph-code"></i></button>
+                        </td>
+                    </tr>
+
+                    <tr data-type="auth"
+                        data-status="verified"
+                        data-block="89108"
+                        data-time="02 Aug 2026, 16:05:33.712"
+                        data-action="AUTH_MFA_SUCCESS"
+                        data-actor="Sub-Insp. Amit Verma (PSI-4401)"
+                        data-ip="192.168.1.62 (Sakoli Terminal)"
+                        data-target="Session: sess_990142_mha"
+                        data-prev-hash="ca978112...48bb"
+                        data-curr-hash="b94d27b9...cde9"
+                        data-payload='{"action": "AUTH_SUCCESS", "method": "FIDO2_HARDWARE_KEY + BIOMETRIC", "officer_id": "PSI-4401", "ip": "192.168.1.62", "terminal_cert": "VALID_STATE_POLICE"}'>
+                        <td class="font-mono block-id-cell">#89108</td>
+                        <td class="font-mono time-cell">02 Aug 16:05:33</td>
+                        <td>
+                            <div class="event-action-wrap">
+                                <span class="action-tag tag-blue"><i class="ph-fill ph-user-check"></i> AUTH_MFA_SUCCESS</span>
+                                <span class="action-sub">Hardware Token Authenticated</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="actor-block">
+                                <span class="actor-name">Sub-Insp. Amit Verma</span>
+                                <span class="actor-ip font-mono">192.168.1.62</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="target-title">Investigative Console Login</span>
+                            <span class="target-docket font-mono text-gold">Sakoli Police Station</span>
+                        </td>
+                        <td>
+                            <div class="chain-flow-box">
+                                <span class="chain-hash font-mono">ca97...48bb</span>
+                                <i class="ph ph-arrow-right text-teal"></i>
+                                <span class="chain-hash font-mono text-teal">b94d...cde9</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Chained & Valid</span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn-inspect-payload" title="Inspect Raw Log Payload"><i class="ph ph-code"></i></button>
+                        </td>
+                    </tr>
+
+                    <tr data-type="vault"
+                        data-status="verified"
+                        data-block="89109"
+                        data-time="02 Aug 2026, 17:30:01.401"
+                        data-action="EVIDENCE_DISPATCH_COURT"
+                        data-actor="Insp. Rahul Sharma (CID-8812)"
+                        data-ip="192.168.1.45 (Terminal-CID-BHD01)"
+                        data-target="CCTV_ServerRoom_Access.mp4"
+                        data-prev-hash="b94d27b9...cde9"
+                        data-curr-hash="38adf810...9021"
+                        data-payload='{"action": "COURT_PRODUCTION_TRANSFER", "file": "CCTV_ServerRoom_Access.mp4", "transferred_to": "Principal Sessions Judge, Bhandara", "carrier": "Secure State GovNet Fiber", "status": "LOCKED_IN_TRIAL"}'>
+                        <td class="font-mono block-id-cell">#89109</td>
+                        <td class="font-mono time-cell">02 Aug 17:30:01</td>
+                        <td>
+                            <div class="event-action-wrap">
+                                <span class="action-tag tag-vault"><i class="ph-fill ph-scales"></i> COURT_DISPATCH</span>
+                                <span class="action-sub">Production Docket Transferred</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="actor-block">
+                                <span class="actor-name">Insp. Rahul Sharma</span>
+                                <span class="actor-ip font-mono">192.168.1.45</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="target-title">CCTV_ServerRoom_Access.mp4</span>
+                            <span class="target-docket font-mono text-gold">CR-2026-MH01</span>
+                        </td>
+                        <td>
+                            <div class="chain-flow-box">
+                                <span class="chain-hash font-mono">b94d...cde9</span>
+                                <i class="ph ph-arrow-right text-teal"></i>
+                                <span class="chain-hash font-mono text-teal">38ad...9021</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-tag status-verified"><i class="ph-fill ph-check-circle"></i> Chained & Valid</span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn-inspect-payload" title="Inspect Raw Log Payload"><i class="ph ph-code"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<div class="modal-backdrop" id="payloadInspectModal">
+    <div class="modal-dialog payload-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-code modal-icon-badge"></i>
+                <div>
+                    <h3 id="payloadBlockTitle">Audit Block #89104</h3>
+                    <p id="payloadTimestamp">02 Aug 2026, 10:30:14.281 IST</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="payloadInspectModal"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="telemetry-info-grid">
+                <div class="telemetry-box">
+                    <span class="t-label">Event Type</span>
+                    <span class="t-val font-mono" id="payloadAction">EVIDENCE_INGEST_SHA256</span>
+                </div>
+                <div class="telemetry-box">
+                    <span class="t-label">Actor / Credentials</span>
+                    <span class="t-val" id="payloadActor">Insp. Rahul Sharma</span>
+                </div>
+                <div class="telemetry-box">
+                    <span class="t-label">IP & Terminal Gateway</span>
+                    <span class="t-val font-mono" id="payloadIp">192.168.1.45</span>
+                </div>
+                <div class="telemetry-box">
+                    <span class="t-label">Associated Docket</span>
+                    <span class="t-val font-mono text-gold" id="payloadTarget">CR-2026-MH01</span>
+                </div>
+            </div>
+
+            <div class="raw-json-viewer-box">
+                <span class="json-header-label">Raw Immutable Block Payload (JSON-LD Format):</span>
+                <pre class="json-code-pre" id="payloadRawJson">{
+  "action": "INGEST",
+  "file": "FIR_MH26_0124.pdf"
+}</pre>
+            </div>
+
+            <div class="chain-proof-card">
+                <i class="ph-fill ph-seal-check text-gold"></i>
+                <div>
+                    <span>Non-Repudiation Verified</span>
+                    <p>Log is signed with SHA-256 parent link and committed across distributed nodes.</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" data-close="payloadInspectModal">Close Inspector</button>
+            <button type="button" class="btn-primary-action" id="btnExportAuditLogSingle">
+                <i class="ph ph-download-simple"></i> Export JSON-LD Proof
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/audit_trail.js' %}"></script>
+{% endblock %}

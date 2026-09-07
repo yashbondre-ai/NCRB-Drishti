@@ -1,0 +1,210 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request an Account — NCRB Drishti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/registration.css' %}">
+</head>
+<body>
+
+  <div class="auth-shell">
+
+    <!-- ============================= -->
+    <!-- LEFT: BRANDING PANEL          -->
+    <!-- ============================= -->
+    <aside class="brand-panel">
+      <div class="brand-panel__inner">
+
+        <div class="brand-mark">
+          <span class="brand-mark__seal" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M24 10 L36 16 V24 C36 32.5 30.8 37.8 24 40 C17.2 37.8 12 32.5 12 24 V16 Z" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M17 24.5 L21.5 29 L31 18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="brand-mark__name">NCRB&nbsp;DRISHTI</span>
+        </div>
+
+        <h1 class="brand-tagline">One workspace,<br>every case file.</h1>
+
+        <p class="brand-copy">
+          Drishti brings case records, evidence and legal filings into a single
+          controlled environment for departments that cannot afford a gap in
+          the chain of custody.
+        </p>
+
+        <ul class="brand-points">
+          <li>
+            <span class="brand-points__index">01</span>
+            <span>Every access request is reviewed by an administrator before it is granted.</span>
+          </li>
+          <li>
+            <span class="brand-points__index">02</span>
+            <span>Access is scoped to the role and department assigned to your account.</span>
+          </li>
+          <li>
+            <span class="brand-points__index">03</span>
+            <span>Every action taken inside the system is written to the audit log.</span>
+          </li>
+        </ul>
+
+        <p class="brand-footnote">Ministry of Home Affairs · National Crime Records Bureau</p>
+      </div>
+    </aside>
+
+    <!-- ============================= -->
+    <!-- RIGHT: FORM PANEL             -->
+    <!-- ============================= -->
+    <main class="form-panel">
+      <div class="form-panel__inner">
+
+        <!-- ---------- registration form ---------- -->
+        <section id="registrationView" class="auth-card">
+
+          <header class="auth-card__header">
+            <h2>Request an account</h2>
+            <p>
+              New accounts require administrator approval. You will be able to
+              sign in only after your request is reviewed and approved.
+            </p>
+          </header>
+
+          <div id="formAlert" class="alert alert--error" role="alert" hidden></div>
+
+          <form id="registrationForm" novalidate>
+            {% csrf_token %}
+
+            <div class="field">
+              <label for="full_name">Full name</label>
+              <input type="text" id="full_name" name="full_name" autocomplete="name" required>
+              <p class="field__error" id="err_full_name"></p>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" autocomplete="username" required minlength="4">
+                <p class="field__error" id="err_username"></p>
+              </div>
+
+              <div class="field">
+                <label for="email">Official email</label>
+                <input type="email" id="email" name="email" autocomplete="email" required>
+                <p class="field__error" id="err_email"></p>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="mobile_number">Mobile number</label>
+                <input type="tel" id="mobile_number" name="mobile_number" autocomplete="tel" required
+                       inputmode="numeric" maxlength="10" placeholder="10-digit number">
+                <p class="field__error" id="err_mobile_number"></p>
+              </div>
+
+              <div class="field">
+                <label for="role">Role</label>
+                <select id="role" name="role" required>
+                  <option value="" selected disabled>Select a role</option>
+                  <option value="SUPER_ADMIN">Super Admin</option>
+                  <option value="DEPARTMENT_ADMIN">Department Admin</option>
+                  <option value="INVESTIGATION_OFFICER">Investigation Officer</option>
+                  <option value="CASE_OFFICER">Case Officer / Case Manager</option>
+                  <option value="LEGAL_OFFICER">Legal Officer</option>
+                  <option value="EVIDENCE_FORENSIC_OFFICER">Evidence/Forensic Officer</option>
+                  <option value="REVIEWER_APPROVER">Reviewer / Approver</option>
+                  <option value="AUDITOR">Auditor</option>
+                  <option value="VIEWER">Viewer</option>
+                </select>
+                <p class="field__hint" id="roleHint"></p>
+                <p class="field__error" id="err_role"></p>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="password">Password</label>
+                <div class="password-input">
+                  <input type="password" id="password" name="password" autocomplete="new-password" required minlength="8">
+                  <button type="button" class="password-toggle" data-target="password" aria-label="Show password" aria-pressed="false">
+                    <svg class="icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+                    <svg class="icon-eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" hidden><path d="M3 3l18 18M10.6 10.7a3 3 0 0 0 4.2 4.2M6.6 6.7C4.3 8.2 2.7 10.3 2 12c0 0 3.6 7 10 7 1.9 0 3.5-.5 4.9-1.3M9.9 5.2C10.6 5.1 11.3 5 12 5c6.4 0 10 7 10 7-.5.9-1.2 2-2.2 3.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  </button>
+                </div>
+                <p class="field__error" id="err_password"></p>
+              </div>
+
+              <div class="field">
+                <label for="confirm_password">Confirm password</label>
+                <div class="password-input">
+                  <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" required minlength="8">
+                  <button type="button" class="password-toggle" data-target="confirm_password" aria-label="Show password" aria-pressed="false">
+                    <svg class="icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+                    <svg class="icon-eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" hidden><path d="M3 3l18 18M10.6 10.7a3 3 0 0 0 4.2 4.2M6.6 6.7C4.3 8.2 2.7 10.3 2 12c0 0 3.6 7 10 7 1.9 0 3.5-.5 4.9-1.3M9.9 5.2C10.6 5.1 11.3 5 12 5c6.4 0 10 7 10 7-.5.9-1.2 2-2.2 3.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  </button>
+                </div>
+                <p class="field__error" id="err_confirm_password"></p>
+              </div>
+            </div>
+
+            <label class="checkbox-field" for="usage_policy">
+              <input type="checkbox" id="usage_policy" name="usage_policy" required>
+              <span>I confirm the information above is accurate and agree to the departmental usage policy.</span>
+            </label>
+            <p class="field__error" id="err_usage_policy"></p>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+              <span class="btn-submit__label">Submit request</span>
+              <span class="btn-submit__spinner" hidden></span>
+            </button>
+
+            <p class="auth-switch">
+              Already have an account? <a href="{% url 'login' %}">Sign in</a>
+            </p>
+          </form>
+        </section>
+
+        <!-- ---------- pending approval confirmation ---------- -->
+        <section id="pendingView" class="auth-card" hidden>
+          <div class="pending-icon" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="9.25" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M12 7v5l3.2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <h2>Request submitted successfully.</h2>
+          <p class="pending-copy">
+            Your account request has been submitted successfully. Your account
+            is currently pending admin approval. You will be able to log in
+            after your account is approved.
+          </p>
+
+          <dl class="pending-meta">
+            <div>
+              <dt>Status</dt>
+              <dd><span class="status-badge status-badge--pending">Pending Approval</span></dd>
+            </div>
+            <div>
+              <dt>Submitted as</dt>
+              <dd id="pendingUsername">—</dd>
+            </div>
+          </dl>
+
+          <a href="{% url 'login' %}" class="btn-secondary">Return to Sign In</a>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>var REGISTER_ENDPOINT = "/api/auth/register/";</script>
+  <script src="{% static 'js/registration.js' %}"></script>
+</body>
+</html>

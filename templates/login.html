@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — NCRB Drishti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+
+  <div class="auth-shell">
+
+    <!-- ============================= -->
+    <!-- LEFT: BRANDING PANEL          -->
+    <!-- ============================= -->
+    <aside class="brand-panel">
+      <div class="brand-panel__inner">
+
+        <div class="brand-mark">
+          <span class="brand-mark__seal" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M24 10 L36 16 V24 C36 32.5 30.8 37.8 24 40 C17.2 37.8 12 32.5 12 24 V16 Z" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M17 24.5 L21.5 29 L31 18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="brand-mark__name">NCRB&nbsp;DRISHTI</span>
+        </div>
+
+        <h1 class="brand-tagline">Case records,<br>under one key.</h1>
+
+        <p class="brand-copy">
+          Sign in to the controlled workspace departments use to manage case
+          files, evidence and legal filings without breaking the chain of
+          custody.
+        </p>
+
+        <ul class="brand-points">
+          <li>
+            <span class="brand-points__index">01</span>
+            <span>Documents are encrypted at rest and verified against tampering.</span>
+          </li>
+          <li>
+            <span class="brand-points__index">02</span>
+            <span>Access is scoped to the role and department assigned to your account.</span>
+          </li>
+          <li>
+            <span class="brand-points__index">03</span>
+            <span>Every sign-in and every action is written to the audit log.</span>
+          </li>
+        </ul>
+
+        <p class="brand-footnote">Ministry of Home Affairs · National Crime Records Bureau</p>
+      </div>
+    </aside>
+
+    <!-- ============================= -->
+    <!-- RIGHT: FORM PANEL             -->
+    <!-- ============================= -->
+    <main class="form-panel">
+      <div class="form-panel__inner">
+
+        <section class="auth-card">
+
+          <header class="auth-card__header">
+            <h2>Sign in</h2>
+            <p>Enter your credentials to access your workspace.</p>
+          </header>
+
+          <div id="formAlert" class="alert alert--error" role="alert" hidden></div>
+          <div id="formNotice" class="alert alert--notice" role="status" hidden></div>
+
+          <form id="loginForm" novalidate>
+
+            <div class="field">
+              <label for="identifier">Username or official email</label>
+              <input type="text" id="identifier" name="identifier" autocomplete="username" required>
+              <p class="field__error" id="err_identifier"></p>
+            </div>
+
+            <div class="field">
+              <div class="field__label-row">
+                <label for="password">Password</label>
+                <a href="#" id="forgotPasswordLink" class="field__aside-link">Forgot password?</a>
+              </div>
+              <div class="password-input">
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
+                <button type="button" class="password-toggle" data-target="password" aria-label="Show password" aria-pressed="false">
+                  <svg class="icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+                  <svg class="icon-eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" hidden><path d="M3 3l18 18M10.6 10.7a3 3 0 0 0 4.2 4.2M6.6 6.7C4.3 8.2 2.7 10.3 2 12c0 0 3.6 7 10 7 1.9 0 3.5-.5 4.9-1.3M9.9 5.2C10.6 5.1 11.3 5 12 5c6.4 0 10 7 10 7-.5.9-1.2 2-2.2 3.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+              <p class="field__error" id="err_password"></p>
+            </div>
+
+            <label class="checkbox-field" for="remember_me">
+              <input type="checkbox" id="remember_me" name="remember_me">
+              <span>Remember me on this device</span>
+            </label>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+              <span class="btn-submit__label">Sign in</span>
+              <span class="btn-submit__spinner" hidden></span>
+            </button>
+
+            <p class="auth-switch">
+              Don't have an account? <a href="/register/">Request Access</a>
+            </p>
+          </form>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>var LOGIN_ENDPOINT = "/api/auth/login/";</script>
+  <script src="{% static 'js/login.js' %}"></script>
+</body>
+</html>

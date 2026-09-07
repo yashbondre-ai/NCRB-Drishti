@@ -2,7 +2,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
 from rest_framework import serializers
+<<<<<<< HEAD
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+=======
+>>>>>>> 12ae628cce659f21e1111b535650f8ce5843efc5
 
 from .models import Organization, Role, RoleRequest
 
@@ -204,6 +207,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             RoleRequest.objects.create(user=user, requested_role=requested_role)
 
         return user
+<<<<<<< HEAD
 
 
 class RoleRequestSerializer(serializers.ModelSerializer):
@@ -268,11 +272,14 @@ class DashboardSerializer(serializers.ModelSerializer):
     
     
    
+=======
+>>>>>>> 12ae628cce659f21e1111b535650f8ce5843efc5
 
 
-class LoginSerializer(TokenObtainPairSerializer):
+class LoginSerializer(serializers.Serializer):
 
-    username_field = "email"
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
         email = attrs.get("email")
@@ -289,7 +296,7 @@ class LoginSerializer(TokenObtainPairSerializer):
             email__iexact=email
         ).first()
 
-        if not user:
+        if not user or not user.check_password(password):
             raise serializers.ValidationError(
                 "Invalid email or password."
             )
@@ -299,17 +306,8 @@ class LoginSerializer(TokenObtainPairSerializer):
                 f"Account is {user.status.lower()}. Please contact your administrator."
             )
 
-        if not user.check_password(password):
-            raise serializers.ValidationError(
-                "Invalid email or password."
-            )
-
-        data = super().validate({
-            "email": email,
-            "password": password,
-        })
-
-        data["user"] = {
+        attrs["user"] = user
+        attrs["user_data"] = {
             "id": user.id,
             "organization_id": user.organization_id,
             "employee_code": user.employee_code,
@@ -319,5 +317,4 @@ class LoginSerializer(TokenObtainPairSerializer):
             "status": user.status,
             "mfa_enabled": user.mfa_enabled,
         }
-
-        return data
+        return attrs
