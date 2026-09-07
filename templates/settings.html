@@ -1,0 +1,514 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}System Settings & Cryptographic Configuration | NCRB-Drishti{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/settings.css' %}?v=1.1">
+{% endblock %}
+
+{% block page_title %}Forensic Security & System Configuration{% endblock %}
+{% block page_subtitle %}Statutory Compliance Rules • Hardware Security Token Enclave & Byzantine Consensus Parameters{% endblock %}
+
+{% block content %}
+<div class="settings-page-wrapper">
+    <div class="settings-layout-grid">
+        <aside class="settings-nav-sidebar">
+            <div class="nav-header">
+                <span class="nav-section-tag font-mono">CONFIGURATION TIERS</span>
+            </div>
+            <nav class="settings-tab-list">
+                <button type="button" class="settings-tab-btn active" data-tab="hardware_security">
+                    <i class="ph-fill ph-fingerprint"></i>
+                    <span>Hardware & Token Security</span>
+                </button>
+                <button type="button" class="settings-tab-btn" data-tab="statutory_rules">
+                    <i class="ph-fill ph-scales"></i>
+                    <span>BSA & BNSS Statutory Rules</span>
+                </button>
+                <button type="button" class="settings-tab-btn" data-tab="consensus_ledger">
+                    <i class="ph-fill ph-git-branch"></i>
+                    <span>Byzantine Consensus Nodes</span>
+                </button>
+                <button type="button" class="settings-tab-btn" data-tab="cryptographic_vault">
+                    <i class="ph-fill ph-lock-key"></i>
+                    <span>Vault & Auto-Quarantine</span>
+                </button>
+                <button type="button" class="settings-tab-btn" data-tab="jurisdiction_profile">
+                    <i class="ph-fill ph-shield-star"></i>
+                    <span>Unit & Court Jurisdiction</span>
+                </button>
+            </nav>
+
+            <div class="system-enclave-badge">
+                <div class="badge-status-line">
+                    <span class="status-pulse-dot"></span>
+                    <span class="badge-title font-mono">FIPS 140-3 COMPLIANT</span>
+                </div>
+                <p class="badge-desc">Cryptographic operations bound to root State Security Enclave.</p>
+            </div>
+        </aside>
+
+        <main class="settings-content-viewport">
+            <form id="settingsMasterForm">
+                {% csrf_token %}
+
+                <div class="settings-tab-content active" id="tab_hardware_security">
+                    <div class="content-header">
+                        <div>
+                            <h4>Officer Hardware Token & Biometric Enclave</h4>
+                            <p>Configure physical security keys, FIDO2 tokens, and active terminal timeout rules</p>
+                        </div>
+                        <span class="security-level-pill font-mono">LEVEL 4 ENCLAVE</span>
+                    </div>
+
+                    <div class="setting-group-card">
+                        <div class="group-title-line">
+                            <i class="ph-fill ph-key text-teal"></i>
+                            <div>
+                                <h5>Registered Physical Authentication Keys</h5>
+                                <span>Hardware keys authorized for digital endorsements and cryptographic actions</span>
+                            </div>
+                        </div>
+
+                        <div class="active-token-box">
+                            <div class="token-left">
+                                <div class="token-icon-frame">
+                                    <i class="ph-fill ph-usb"></i>
+                                </div>
+                                <div class="token-details">
+                                    <div class="token-name-row">
+                                        <span class="token-model">YubiKey 5C NFC (FIDO2/WebAuthn)</span>
+                                        <span class="badge-token-active font-mono">ACTIVE BINDING</span>
+                                    </div>
+                                    <span class="token-serial font-mono text-gold">SERIAL: YUBI-8819-2041-MH01</span>
+                                    <span class="token-meta">Bound to: Insp. Rahul Sharma (CID-8812) • Last Tap: Today 10:30 IST</span>
+                                </div>
+                            </div>
+                            <div class="token-actions">
+                                <button type="button" class="btn-token-recalibrate" id="btnTestToken">
+                                    <i class="ph ph-arrows-clockwise"></i> Test Key
+                                </button>
+                                <button type="button" class="btn-token-deregister">
+                                    <i class="ph ph-trash"></i> Revoke
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-add-token" id="btnRegisterNewKey">
+                            <i class="ph ph-plus-circle"></i> Register Secondary Hardware Token
+                        </button>
+                    </div>
+
+                    <div class="setting-group-card">
+                        <div class="group-title-line">
+                            <i class="ph-fill ph-timer text-gold"></i>
+                            <div>
+                                <h5>Session Expiration & Re-Authentication Thresholds</h5>
+                                <span>Inactivity lockouts compliant with judicial digital repository protocols</span>
+                            </div>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Strict Terminal Inactivity Lockout</span>
+                                <span class="toggle-sub">Locks investigator terminal when inactive to prevent physical credential hijacking</span>
+                            </div>
+                            <select class="settings-select" id="sessionTimeoutSelect">
+                                <option value="5">5 Minutes (Judicial Strict)</option>
+                                <option value="15" selected>15 Minutes (Standard Protocol)</option>
+                                <option value="30">30 Minutes (Station Desktop)</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Biometric Challenge for FIR Endorsement</span>
+                                <span class="toggle-sub">Requires physical key presence verification before committing Section 173 BNSS seals</span>
+                            </div>
+                            <label class="switch-control">
+                                <input type="checkbox" checked id="requireBiometricSign">
+                                <span class="slider-round"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Hardware Token PIN Caching</span>
+                                <span class="toggle-sub">Allows physical token PIN memory for current authenticated browser session</span>
+                            </div>
+                            <label class="switch-control">
+                                <input type="checkbox" id="tokenPinCache">
+                                <span class="slider-round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-tab-content" id="tab_statutory_rules">
+                    <div class="content-header">
+                        <div>
+                            <h4>Statutory Legal Framework Configuration</h4>
+                            <p>Threshold parameters under Bharatiya Sakshya Adhiniyam & Bharatiya Nagarik Suraksha Sanhita</p>
+                        </div>
+                        <span class="security-level-pill font-mono text-gold">BSA / BNSS 2023</span>
+                    </div>
+
+                    <div class="setting-group-card">
+                        <div class="group-title-line">
+                            <i class="ph-fill ph-hourglass-high text-amber"></i>
+                            <div>
+                                <h5>Section 193 BNSS Chargesheet Remand Countdown Sentinel</h5>
+                                <span>Automated escalation triggers prior to statutory investigation expiry</span>
+                            </div>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Statutory Remand Early Warning Threshold</span>
+                                <span class="toggle-sub">Sends high-priority escalation notices to IO and Supervisory SP prior to day 60/90</span>
+                            </div>
+                            <select class="settings-select" id="bnssWarningThreshold">
+                                <option value="24">24 Hours Prior</option>
+                                <option value="48" selected>48 Hours Prior (Recommended)</option>
+                                <option value="72">72 Hours Prior</option>
+                                <option value="120">5 Days Prior</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Automated Superintendent of Police (SP) SMS Escalation</span>
+                                <span class="toggle-sub">Dispatches direct GovNet emergency alerts when chargesheets reach critical 24-hour mark</span>
+                            </div>
+                            <label class="switch-control">
+                                <input type="checkbox" checked id="spEscalationSms">
+                                <span class="slider-round"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-group-card">
+                        <div class="group-title-line">
+                            <i class="ph-fill ph-certificate text-teal"></i>
+                            <div>
+                                <h5>BSA Section 63 & 65B Certificate Automation</h5>
+                                <span>Court-admissible electronic record certificate generation engine</span>
+                            </div>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Automatic Certificate Generation on Evidence Seal</span>
+                                <span class="toggle-sub">Instantaneously drafts signed electronic records certificate upon SHA-256 vault ingest</span>
+                            </div>
+                            <label class="switch-control">
+                                <input type="checkbox" checked id="autoGenerateBsaCert">
+                                <span class="slider-round"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">National Time Stamping Authority (TSA) Verification</span>
+                                <span class="toggle-sub">Anchors every ingested bitstream to Indian Standard Time (IST) cryptographic time server</span>
+                            </div>
+                            <label class="switch-control">
+                                <input type="checkbox" checked id="nationalTsaSync">
+                                <span class="slider-round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-tab-content" id="tab_consensus_ledger">
+                    <div class="content-header">
+                        <div>
+                            <h4>Byzantine Consensus & Ledger Node Topology</h4>
+                            <p>Configure TiDB consensus parameters, node heartbeat intervals, and peer quorum</p>
+                        </div>
+                        <span class="security-level-pill font-mono text-teal">BFT-RAFT V2</span>
+                    </div>
+
+                    <div class="setting-group-card">
+                        <div class="group-title-line">
+                            <i class="ph-fill ph-git-commit text-teal"></i>
+                            <div>
+                                <h5>Consensus Quorum Rules</h5>
+                                <span>Minimum validator agreement threshold before committing evidence to immutable ledger</span>
+                            </div>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Enclave Byzantine Quorum Requirement</span>
+                                <span class="toggle-sub">Demands confirmation from Forensic Lab, Police HQ, and Judicial Registry nodes</span>
+                            </div>
+                            <select class="settings-select" id="consensusQuorumSelect">
+                                <option value="strict" selected>Strict Consensus (3 of 3 Nodes Required)</option>
+                                <option value="majority">Majority Consensus (2 of 3 Nodes Permitted)</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Peer Latency Alert Threshold</span>
+                                <span class="toggle-sub">Triggers telemetry incident if judicial bridge latency exceeds threshold</span>
+                            </div>
+                            <select class="settings-select" id="nodeLatencySelect">
+                                <option value="50">50 ms</option>
+                                <option value="100" selected>100 ms (Standard GovNet)</option>
+                                <option value="250">250 ms</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-group-card">
+                        <div class="group-title-line">
+                            <i class="ph-fill ph-hard-drives text-gold"></i>
+                            <div>
+                                <h5>Designated Judicial Ledger Endpoints</h5>
+                                <span>Active consensus peers participating in distributed state validation</span>
+                            </div>
+                        </div>
+
+                        <div class="endpoints-table-frame">
+                            <div class="endpoint-row">
+                                <div class="endpoint-info">
+                                    <span class="ep-name">DFSL Cyber Forensics Lab (Node 01)</span>
+                                    <span class="ep-url font-mono">tls://dfsl-node01.mumbai.govnet.in:4000</span>
+                                </div>
+                                <span class="badge-ep-status font-mono online"><i class="ph-fill ph-check-circle"></i> CONNECTED</span>
+                            </div>
+                            <div class="endpoint-row">
+                                <div class="endpoint-info">
+                                    <span class="ep-name">High Court Judicial Registry (Node 02)</span>
+                                    <span class="ep-url font-mono">tls://hc-registry.nagpur.govnet.in:4000</span>
+                                </div>
+                                <span class="badge-ep-status font-mono online"><i class="ph-fill ph-check-circle"></i> CONNECTED</span>
+                            </div>
+                            <div class="endpoint-row">
+                                <div class="endpoint-info">
+                                    <span class="ep-name">NCRB National Crime Records Core (Node 03)</span>
+                                    <span class="ep-url font-mono">tls://ncrb-core.delhi.govnet.in:4000</span>
+                                </div>
+                                <span class="badge-ep-status font-mono online"><i class="ph-fill ph-check-circle"></i> CONNECTED</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-tab-content" id="tab_cryptographic_vault">
+                    <div class="content-header">
+                        <div>
+                            <h4>Forensic Vault & Cryptographic Quarantine</h4>
+                            <p>Payload encryption algorithms, automated tamper response, and hash verification policies</p>
+                        </div>
+                        <span class="security-level-pill font-mono text-danger">ZERO-TRUST SHIELD</span>
+                    </div>
+
+                    <div class="setting-group-card">
+                        <div class="group-title-line">
+                            <i class="ph-fill ph-shield-check text-danger"></i>
+                            <div>
+                                <h5>Automated Quarantine on Bitstream Discrepancy</h5>
+                                <span>Instant response actions executed when hash verification fails</span>
+                            </div>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Automatic Vault Isolation on Mismatch</span>
+                                <span class="toggle-sub">Instantly revokes file access and moves artifact to quarantine if SHA-256 diverges from ledger</span>
+                            </div>
+                            <label class="switch-control">
+                                <input type="checkbox" checked id="autoQuarantineMismatch">
+                                <span class="slider-round"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Strict Tamper Log Generation</span>
+                                <span class="toggle-sub">Generates cryptographic non-repudiation audit docket immediately upon isolation</span>
+                            </div>
+                            <label class="switch-control">
+                                <input type="checkbox" checked id="generateTamperLog">
+                                <span class="slider-round"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-group-card">
+                        <div class="group-title-line">
+                            <i class="ph-fill ph-password text-gold"></i>
+                            <div>
+                                <h5>Storage Encryption & Ingest Boundaries</h5>
+                                <span>Payload encryption standards and maximum admissible raw file sizes</span>
+                            </div>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">At-Rest Payload Encryption Protocol</span>
+                                <span class="toggle-sub">Military-grade cryptographic envelope applied to all raw evidence blobs</span>
+                            </div>
+                            <select class="settings-select" id="encryptionStandardSelect">
+                                <option value="aes256" selected>AES-256-GCM (Hardware Accelerated)</option>
+                                <option value="chacha20">ChaCha20-Poly1305 (GovNet Optimized)</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-row-toggle">
+                            <div class="toggle-info">
+                                <span class="toggle-label">Maximum Single Artifact Ingest Limit</span>
+                                <span class="toggle-sub">Upper limit for raw disk images, memory dumps, and CCTV surveillance files</span>
+                            </div>
+                            <select class="settings-select" id="maxFileSizeSelect">
+                                <option value="5">5 GB (Standard Surveillance)</option>
+                                <option value="10" selected>10 GB (Forensic Bitstream Disk Dump)</option>
+                                <option value="25">25 GB (Multi-Camera Enclave)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-tab-content" id="tab_jurisdiction_profile">
+                    <div class="content-header">
+                        <div>
+                            <h4>Unit Identity & Judicial Jurisdiction Profile</h4>
+                            <p>Designation parameters reflected on all issued certificates, reports, and audit dockets</p>
+                        </div>
+                        <span class="security-level-pill font-mono">STATION ENCLAVE</span>
+                    </div>
+
+                    <div class="setting-group-card">
+                        <div class="group-title-line">
+                            <i class="ph-fill ph-buildings text-gold"></i>
+                            <div>
+                                <h5>Police Unit Registration</h5>
+                                <span>Official agency parameters embedded in statutory metadata headers</span>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-two">
+                            <div class="setting-input-field">
+                                <label>Operating Police Station / Enclave</label>
+                                <input type="text" class="field-control" value="Cyber Crime Investigation Cell, Bhandara" required>
+                            </div>
+                            <div class="setting-input-field">
+                                <label>Station Code / CCTNS Station ID</label>
+                                <input type="text" class="field-control font-mono" value="MH-BHD-CYB-01" required>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-two">
+                            <div class="setting-input-field">
+                                <label>District & Police Range</label>
+                                <input type="text" class="field-control" value="Bhandara District • Nagpur Police Range" required>
+                            </div>
+                            <div class="setting-input-field">
+                                <label>Supervising Officer Designation</label>
+                                <input type="text" class="field-control" value="Superintendent of Police (SP), Bhandara" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group-card">
+                        <div class="group-title-line">
+                            <i class="ph-fill ph-scales text-teal"></i>
+                            <div>
+                                <h5>Competent Jurisdictional Court</h5>
+                                <span>Designated magistrate and sessions court for statutory case docket forwarding</span>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-two">
+                            <div class="setting-input-field">
+                                <label>Designated Trial Court</label>
+                                <input type="text" class="field-control" value="Court of Principal District & Sessions Judge, Bhandara" required>
+                            </div>
+                            <div class="setting-input-field">
+                                <label>Jurisdictional High Court Bench</label>
+                                <input type="text" class="field-control" value="Bombay High Court, Nagpur Bench" required>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-two">
+                            <div class="setting-input-field">
+                                <label>Designated Public Prosecutor Enclave</label>
+                                <input type="text" class="field-control" value="Office of Chief Public Prosecutor, Sessions Court" required>
+                            </div>
+                            <div class="setting-input-field">
+                                <label>State Forensic Laboratory (DFSL) Liaison</label>
+                                <input type="text" class="field-control" value="Regional Forensic Science Laboratory, Nagpur" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-action-bar">
+                    <span class="save-status-indicator" id="saveStatusIndicator">All cryptographic parameters synced with local enclave</span>
+                    <div class="action-buttons">
+                        <button type="button" class="btn-discard" id="btnDiscardChanges">Discard</button>
+                        <button type="submit" class="btn-save-settings" id="btnSaveSettings">
+                            <i class="ph-fill ph-shield-check"></i>
+                            <span>Save Configuration</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="tokenTestModal">
+    <div class="modal-dialog token-test-dialog">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <i class="ph-fill ph-broadcast modal-icon-badge text-teal"></i>
+                <div>
+                    <h3>Hardware Key Diagnostic</h3>
+                    <p>Testing physical presence and cryptographic handshake</p>
+                </div>
+            </div>
+            <button class="modal-close" data-close="tokenTestModal"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="handshake-status-banner" id="handshakeStatusBanner">
+                <i class="ph ph-spinner-gap spin" id="handshakeIcon"></i>
+                <div>
+                    <h5 id="handshakeTitle">Awaiting Hardware Token Response...</h5>
+                    <p id="handshakeSub">Please tap the gold contact or verify biometric sensor on your YubiKey.</p>
+                </div>
+            </div>
+
+            <div class="diagnostic-grid font-mono">
+                <div class="diag-item">
+                    <span class="d-label">FIDO2 WebAuthn Protocol</span>
+                    <span class="d-val text-teal" id="diagProtocol">Level 2 Supported</span>
+                </div>
+                <div class="diag-item">
+                    <span class="d-label">ECDSA Signature Validity</span>
+                    <span class="d-val text-gold" id="diagSignature">Verifying...</span>
+                </div>
+                <div class="diag-item">
+                    <span class="d-label">Counter Tamper Check</span>
+                    <span class="d-val" id="diagCounter">Pass (Valid Sequence)</span>
+                </div>
+                <div class="diag-item">
+                    <span class="d-label">State Enclave Handshake</span>
+                    <span class="d-val" id="diagEnclave">Pending User Tap</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" data-close="tokenTestModal">Close Diagnostic</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/settings.js' %}"></script>
+{% endblock %}
