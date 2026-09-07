@@ -86,7 +86,6 @@ class Organization(models.Model):
 class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **extra_fields):
-
         if not email:
             raise ValueError("Email is required.")
 
@@ -96,34 +95,23 @@ class UserManager(BaseUserManager):
         if is_active is not None and "status" not in extra_fields:
             extra_fields["status"] = User.Status.ACTIVE if is_active else User.Status.DEACTIVATED
 
-        user = self.model(
-            email=email,
-            **extra_fields
-        )
+        user = self.model(email=email, **extra_fields)
 
         if password:
             user.set_password(password)
 
         user.save(using=self._db)
-
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-
-<<<<<<< HEAD
         is_active = extra_fields.pop("is_active", True)
         extra_fields.setdefault("status", User.Status.ACTIVE if is_active else User.Status.DEACTIVATED)
         extra_fields.setdefault("role", User.Role.ADMIN)
-=======
-        extra_fields.pop("is_active", None)
-        extra_fields.setdefault("status", self.model.Status.ACTIVE)
-        extra_fields.setdefault("role", self.model.Role.ADMIN)
->>>>>>> 12ae628cce659f21e1111b535650f8ce5843efc5
 
         return self.create_user(
             email=email,
             password=password,
-            **extra_fields
+            **extra_fields,
         )
 
 
@@ -142,80 +130,36 @@ class User(AbstractBaseUser):
         SUSPENDED = "SUSPENDED", "Suspended"
         DEACTIVATED = "DEACTIVATED", "Deactivated"
 
-    # Required database primary key
-    id = models.BigAutoField(
-        primary_key=True
-    )
+    id = models.BigAutoField(primary_key=True)
 
-    # Organization relationship
     organization = models.ForeignKey(
         Organization,
         on_delete=models.RESTRICT,
         related_name="users",
-        db_column="organization_id"
+        db_column="organization_id",
     )
 
-    employee_code = models.CharField(
-        max_length=40
-    )
-
-    full_name = models.CharField(
-        max_length=120
-    )
-
-    email = models.EmailField(
-        max_length=120,
-        unique=True
-    )
-
+    employee_code = models.CharField(max_length=40)
+    full_name = models.CharField(max_length=120)
+    email = models.EmailField(max_length=120, unique=True)
     role = models.CharField(
         max_length=20,
         choices=Role.choices,
-        default=Role.OFFICER
+        default=Role.OFFICER,
     )
-
-    phone = models.CharField(
-        max_length=20,
-        null=True,
-        blank=True
-    )
-
-    # Django's password field mapped to required DB column
-    password = models.CharField(
-        max_length=255,
-        db_column="password_hash"
-    )
-
-    mfa_enabled = models.BooleanField(
-        default=False
-    )
-
-    mfa_secret_encrypted = models.BinaryField(
-        null=True,
-        blank=True
-    )
-
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    password = models.CharField(max_length=255, db_column="password_hash")
+    mfa_enabled = models.BooleanField(default=False)
+    mfa_secret_encrypted = models.BinaryField(null=True, blank=True)
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
-        default=Status.ACTIVE
+        default=Status.ACTIVE,
     )
+    last_login_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
 
-    last_login_at = models.DateTimeField(
-        null=True,
-        blank=True
-    )
-
-    created_at = models.DateTimeField(
-        default=timezone.now
-    )
-
-    updated_at = models.DateTimeField(
-        default=timezone.now
-    )
-
-    # AbstractBaseUser.last_login is not a DB column on this model.
-    # Map it onto last_login_at so Django auth signals do not crash.
     @property
     def last_login(self):
         return self.last_login_at
@@ -225,13 +169,7 @@ class User(AbstractBaseUser):
         self.last_login_at = value
 
     USERNAME_FIELD = "email"
-
-    REQUIRED_FIELDS = [
-        "organization",
-        "employee_code",
-        "full_name",
-    ]
-
+    REQUIRED_FIELDS = ["organization", "employee_code", "full_name"]
     objects = UserManager()
 
     class Meta:
@@ -243,7 +181,6 @@ class User(AbstractBaseUser):
 
     @is_active.setter
     def is_active(self, value):
-<<<<<<< HEAD
         self.status = self.Status.ACTIVE if value else self.Status.DEACTIVATED
 
     @property
@@ -253,7 +190,7 @@ class User(AbstractBaseUser):
         if hasattr(self, "user_roles"):
             return self.user_roles.filter(
                 role__code="SUPER_ADMIN",
-                role__is_active=True
+                role__is_active=True,
             ).exists()
         return False
 
@@ -261,33 +198,14 @@ class User(AbstractBaseUser):
     def is_superuser(self):
         return self.is_staff
 
-    def has_perm(self, perm, obj=None):
-        return self.is_superuser
-
-    def has_module_perms(self, app_label):
-        return self.is_superuser
-=======
-        if value:
-            self.status = self.Status.ACTIVE
-        elif self.status == self.Status.ACTIVE:
-            self.status = self.Status.DEACTIVATED
-
-    @property
-    def is_staff(self):
-        return self.role == self.Role.ADMIN
-
-    @property
-    def is_superuser(self):
-        return self.role == self.Role.ADMIN
-
     def get_username(self):
         return self.email
 
     def has_perm(self, perm, obj=None):
-        return self.is_staff
+        return self.is_superuser
 
     def has_module_perms(self, app_label):
-        return self.is_staff
+        return self.is_superuser
 
     def save(self, *args, **kwargs):
         update_fields = kwargs.get("update_fields")
@@ -297,7 +215,6 @@ class User(AbstractBaseUser):
                 for field in update_fields
             ]
         super().save(*args, **kwargs)
->>>>>>> 12ae628cce659f21e1111b535650f8ce5843efc5
 
     def __str__(self):
         return self.email

@@ -2,10 +2,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
 from rest_framework import serializers
-<<<<<<< HEAD
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-=======
->>>>>>> 12ae628cce659f21e1111b535650f8ce5843efc5
 
 from .models import Organization, Role, RoleRequest
 
@@ -14,7 +10,6 @@ User = get_user_model()
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Organization
         fields = [
@@ -32,7 +27,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-
         read_only_fields = [
             "id",
             "created_at",
@@ -42,12 +36,8 @@ class OrganizationSerializer(serializers.ModelSerializer):
     def validate_org_code(self, value):
         value = value.strip().upper()
 
-        if Organization.objects.filter(
-            org_code__iexact=value
-        ).exists():
-            raise serializers.ValidationError(
-                "An organization with this code already exists."
-            )
+        if Organization.objects.filter(org_code__iexact=value).exists():
+            raise serializers.ValidationError("An organization with this code already exists.")
 
         return value
 
@@ -55,24 +45,19 @@ class OrganizationSerializer(serializers.ModelSerializer):
         value = value.strip()
 
         if not value:
-            raise serializers.ValidationError(
-                "Organization name is required."
-            )
+            raise serializers.ValidationError("Organization name is required.")
 
         return value
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-
     requested_role = serializers.CharField(write_only=True, required=True)
-
     password = serializers.CharField(
         write_only=True,
         required=True,
         validators=[validate_password],
         style={"input_type": "password"},
     )
-
     confirm_password = serializers.CharField(
         write_only=True,
         required=True,
@@ -81,7 +66,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-
         fields = [
             "organization",
             "employee_code",
@@ -92,43 +76,26 @@ class RegisterSerializer(serializers.ModelSerializer):
             "confirm_password",
             "requested_role",
         ]
-
         extra_kwargs = {
-            "organization": {
-                "required": True,
-            },
-            "employee_code": {
-                "required": True,
-            },
-            "full_name": {
-                "required": True,
-            },
-            "email": {
-                "required": True,
-            },
+            "organization": {"required": True},
+            "employee_code": {"required": True},
+            "full_name": {"required": True},
+            "email": {"required": True},
         }
 
     def validate_email(self, value):
         value = value.lower().strip()
 
-        if User.objects.filter(
-            email__iexact=value
-        ).exists():
-            raise serializers.ValidationError(
-                "An account with this email already exists."
-            )
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError("An account with this email already exists.")
 
         return value
 
     def validate_employee_code(self, value):
         value = value.strip().upper()
 
-        if User.objects.filter(
-            employee_code__iexact=value
-        ).exists():
-            raise serializers.ValidationError(
-                "An account with this employee code already exists."
-            )
+        if User.objects.filter(employee_code__iexact=value).exists():
+            raise serializers.ValidationError("An account with this employee code already exists.")
 
         return value
 
@@ -136,9 +103,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         value = value.strip()
 
         if not value:
-            raise serializers.ValidationError(
-                "Full name is required."
-            )
+            raise serializers.ValidationError("Full name is required.")
 
         return value
 
@@ -149,22 +114,16 @@ class RegisterSerializer(serializers.ModelSerializer):
         value = value.strip()
 
         if not value.isdigit():
-            raise serializers.ValidationError(
-                "Phone number must contain only digits."
-            )
+            raise serializers.ValidationError("Phone number must contain only digits.")
 
         if len(value) < 10 or len(value) > 20:
-            raise serializers.ValidationError(
-                "Phone number must contain between 10 and 20 digits."
-            )
+            raise serializers.ValidationError("Phone number must contain between 10 and 20 digits.")
 
         return value
 
     def validate_organization(self, value):
         if not value.is_active:
-            raise serializers.ValidationError(
-                "This organization is currently inactive."
-            )
+            raise serializers.ValidationError("This organization is currently inactive.")
 
         return value
 
@@ -190,9 +149,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         confirm_password = attrs.get("confirm_password")
 
         if password != confirm_password:
-            raise serializers.ValidationError({
-                "confirm_password": "Passwords do not match."
-            })
+            raise serializers.ValidationError({"confirm_password": "Passwords do not match."})
 
         return attrs
 
@@ -207,7 +164,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             RoleRequest.objects.create(user=user, requested_role=requested_role)
 
         return user
-<<<<<<< HEAD
 
 
 class RoleRequestSerializer(serializers.ModelSerializer):
@@ -221,9 +177,17 @@ class RoleRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoleRequest
         fields = [
-            "id", "user", "user_name", "user_email", "organization",
-            "requested_role", "status", "requested_at",
-            "reviewed_by", "reviewed_at", "remarks",
+            "id",
+            "user",
+            "user_name",
+            "user_email",
+            "organization",
+            "requested_role",
+            "status",
+            "requested_at",
+            "reviewed_by",
+            "reviewed_at",
+            "remarks",
         ]
         read_only_fields = fields
 
@@ -252,10 +216,14 @@ class DashboardSerializer(serializers.ModelSerializer):
         return list(user.user_roles.filter(role__is_active=True).values_list("role__code", flat=True))
 
     def get_permissions(self, user):
-        return list(user.user_roles.filter(
-            role__is_active=True,
-            role__role_permissions__permission__is_active=True,
-        ).values_list("role__role_permissions__permission__code", flat=True).distinct())
+        return list(
+            user.user_roles.filter(
+                role__is_active=True,
+                role__role_permissions__permission__is_active=True,
+            )
+            .values_list("role__role_permissions__permission__code", flat=True)
+            .distinct()
+        )
 
     def get_role_request(self, user):
         request = user.role_requests.select_related("requested_role").first()
@@ -266,18 +234,9 @@ class DashboardSerializer(serializers.ModelSerializer):
             "status": request.status,
             "remarks": request.remarks,
         }
-    
-    
-    
-    
-    
-   
-=======
->>>>>>> 12ae628cce659f21e1111b535650f8ce5843efc5
 
 
 class LoginSerializer(serializers.Serializer):
-
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
@@ -286,20 +245,13 @@ class LoginSerializer(serializers.Serializer):
         password = attrs.get("password")
 
         if not email or not password:
-            raise serializers.ValidationError(
-                "Email and password are required."
-            )
+            raise serializers.ValidationError("Email and password are required.")
 
         email = email.lower().strip()
-
-        user = User.objects.filter(
-            email__iexact=email
-        ).first()
+        user = User.objects.filter(email__iexact=email).first()
 
         if not user or not user.check_password(password):
-            raise serializers.ValidationError(
-                "Invalid email or password."
-            )
+            raise serializers.ValidationError("Invalid email or password.")
 
         if user.status != User.Status.ACTIVE:
             raise serializers.ValidationError(

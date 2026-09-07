@@ -41,9 +41,8 @@ def unseed_role_request_permissions(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("ncrb_auth", "0003_permission_rolepermission"),
-        ("ncrb_auth", "0002_user_role"),
-    ]
+    ("ncrb_auth", "0004_permission_rolepermission"),
+]
 
     operations = [
         migrations.CreateModel(

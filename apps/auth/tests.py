@@ -1,10 +1,18 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
-<<<<<<< HEAD
 from django.urls import reverse
-from rest_framework.test import APIClient
 from rest_framework import status
-from apps.auth.models import Organization, Role, RoleRequest, User, UserRole, Permission, RolePermission
+from rest_framework.test import APIClient
+
+from apps.auth.models import (
+    Organization,
+    Permission,
+    Role,
+    RolePermission,
+    RoleRequest,
+    User,
+    UserRole,
+)
 
 
 class TestingPagesRenderTest(TestCase):
@@ -113,7 +121,7 @@ class AuthFlowAPITest(TestCase):
             code=Role.RoleCode.INVESTIGATION_OFFICER,
             defaults={"name": "Investigation Officer", "is_active": True},
         )
-        # Seed permissions
+
         self.perm_view, _ = Permission.objects.get_or_create(
             code="ROLE_REQUEST_VIEW",
             defaults={"name": "View Role Requests", "is_active": True},
@@ -125,7 +133,6 @@ class AuthFlowAPITest(TestCase):
         RolePermission.objects.get_or_create(role=self.role_super_admin, permission=self.perm_view)
         RolePermission.objects.get_or_create(role=self.role_super_admin, permission=self.perm_approve)
 
-        # Create admin user
         self.admin_user = User.objects.create_user(
             email="superadmin@ncrb.gov.in",
             password="AdminPassword123!",
@@ -154,10 +161,11 @@ class AuthFlowAPITest(TestCase):
 
     def test_login_updates_last_login_at(self):
         self.assertIsNone(self.admin_user.last_login_at)
-        response = self.client.post("/api/auth/login/", {
-            "email": "superadmin@ncrb.gov.in",
-            "password": "AdminPassword123!",
-        }, format="json")
+        response = self.client.post(
+            "/api/auth/login/",
+            {"email": "superadmin@ncrb.gov.in", "password": "AdminPassword123!"},
+            format="json",
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("tokens", response.data)
         self.assertIn("access", response.data["tokens"])
@@ -166,7 +174,6 @@ class AuthFlowAPITest(TestCase):
         self.assertIsNotNone(self.admin_user.last_login_at)
 
     def test_role_request_list_and_approval(self):
-        # Register a regular user
         applicant = User.objects.create_user(
             email="applicant@ncrb.gov.in",
             password="Password12345!",
@@ -179,20 +186,18 @@ class AuthFlowAPITest(TestCase):
             requested_role=self.role_officer,
         )
 
-        # Authenticate as super admin
-        login_res = self.client.post("/api/auth/login/", {
-            "email": "superadmin@ncrb.gov.in",
-            "password": "AdminPassword123!",
-        }, format="json")
+        login_res = self.client.post(
+            "/api/auth/login/",
+            {"email": "superadmin@ncrb.gov.in", "password": "AdminPassword123!"},
+            format="json",
+        )
         token = login_res.data["tokens"]["access"]
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + token)
 
-        # Verify RoleRequestListView works (was broken before)
         list_res = self.client.get("/api/auth/role-requests/")
         self.assertEqual(list_res.status_code, status.HTTP_200_OK)
         self.assertTrue(any(r["id"] == role_req.id for r in list_res.data))
 
-        # Approve the request
         approve_res = self.client.post(f"/api/auth/role-requests/{role_req.id}/approve/")
         self.assertEqual(approve_res.status_code, status.HTTP_200_OK)
 
@@ -200,13 +205,6 @@ class AuthFlowAPITest(TestCase):
         self.assertEqual(role_req.status, RoleRequest.Status.APPROVED)
         self.assertEqual(role_req.reviewed_by, self.admin_user)
         self.assertTrue(UserRole.objects.filter(user=applicant, role=self.role_officer).exists())
-=======
-from rest_framework.test import APIClient
-
-from apps.auth.models import Organization, Permission, Role, RolePermission, User, UserRole
-from apps.cases.models import Case
-from apps.cases.services import CaseService
-from apps.documents.models import AuditLog, BlockchainRecord, Document, DocumentVersion
 
 
 class AuthAndDocumentApiTests(TestCase):
@@ -295,6 +293,10 @@ class AuthAndDocumentApiTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_case_and_document_jwt_flow(self):
+        from apps.cases.models import Case
+        from apps.cases.services import CaseService
+        from apps.documents.models import AuditLog, BlockchainRecord, DocumentVersion
+
         self._login("officer@example.com", "OfficerPass!2026")
         create_case = self.client.post(
             "/api/cases/cases/",
@@ -329,9 +331,7 @@ class AuthAndDocumentApiTests(TestCase):
 
         version = DocumentVersion.objects.get(document_id=document_id, version_number=1)
         self.assertTrue(BlockchainRecord.objects.filter(document_version=version).exists())
-        self.assertTrue(
-            AuditLog.objects.filter(document_id=document_id, action="upload").exists()
-        )
+        self.assertTrue(AuditLog.objects.filter(document_id=document_id, action="upload").exists())
 
         verify = self.client.get(f"/documents/{version.id}/verify/")
         self.assertEqual(verify.status_code, 200, verify.content)
@@ -346,6 +346,10 @@ class AuthAndDocumentApiTests(TestCase):
         self.assertEqual(len(case_docs.data), 1)
 
     def test_outsider_cannot_access_other_org_document(self):
+        from apps.cases.models import Case
+        from apps.cases.services import CaseService
+        from apps.documents.models import DocumentVersion
+
         case = Case.objects.create(
             case_number=CaseService.generate_case_number(),
             title="Restricted case",
@@ -372,4 +376,3 @@ class AuthAndDocumentApiTests(TestCase):
         self.assertEqual(verify.status_code, 403)
         listing = self.client.get("/documents/")
         self.assertEqual(listing.json()["documents"], [])
->>>>>>> 12ae628cce659f21e1111b535650f8ce5843efc5
